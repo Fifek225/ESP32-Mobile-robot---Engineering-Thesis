@@ -1,0 +1,18 @@
+{
+  "name": "ESP",
+  "version": "1.0.0",
+  "description": "Yo mama",
+  "main": "start_server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Filip Kulka",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "express": "^4.21.0",
+    "lowdb": "^7.0.1",
+    "net": "^1.0.2"
+  }
+}
