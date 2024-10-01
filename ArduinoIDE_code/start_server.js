@@ -1,6 +1,5 @@
 import * as net from "node:net";
 import express from "express";
-import asyncHandler from "express-async-handler"
 import bcrypt from "bcrypt";
 import { JSONFilePreset } from 'lowdb/node'
 
