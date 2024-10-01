@@ -1,6 +1,6 @@
 #include <WiFi.h>
 
-char ssid[] = "Filip Hotspot";
+char ssid[] = "Filip wifi";
 char password[] = "tadeuszsznuk";
 
 int status = WL_IDLE_STATUS;
