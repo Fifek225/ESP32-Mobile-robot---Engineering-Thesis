@@ -19,3 +19,6 @@ Project Outputs*/
 
 # Document Local Metadata
 *.metadata
+
+# Ignore node modules
+**/ArduinoIDE_code/node_modules
