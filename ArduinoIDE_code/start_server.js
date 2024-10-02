@@ -1,7 +1,7 @@
 import * as net from "node:net";
 import express from "express";
 import * as bcrypt from 'bcrypt';
-import { Low, JSONFile } from "lowdb";
+import { Low, JSONFile } from "lowdb/node";
 
 
 // User class
