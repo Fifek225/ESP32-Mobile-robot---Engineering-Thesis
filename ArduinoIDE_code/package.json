@@ -1,5 +1,5 @@
 {
-  "name": "ESP",
+  "name": "esp",
   "version": "1.0.0",
   "description": "Yo mama",
   "main": "start_server.js",
@@ -14,5 +14,6 @@
     "express": "^4.21.0",
     "lowdb": "^7.0.1",
     "net": "^1.0.2"
-  }
+  },
+  "keywords": []
 }

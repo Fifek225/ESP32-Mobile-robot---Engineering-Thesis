@@ -1,9 +1,8 @@
 import * as net from "node:net";
 import express from "express";
-import asyncHandler from "express-async-handler"
-import bcrypt from "bcrypt";
-import { JSONFilePreset } from 'lowdb/node'
-
+import * as bcrypt from 'bcrypt';
+import {Low} from "lowdb";
+import {JSONFile} from "lowdb/node"
 //password protection
 
 class User {
@@ -12,10 +11,20 @@ class User {
         this.password = password;
     }
 }
-
 const defaultData = { posts: [] };
-const password_db = await JSONFilePreset<User>('password_db.json', defaultData);
-const {posts} = password_db.data;
+const file = new JSONFile('password_db.json');
+const password_db = new Low(file,defaultData);
+
+
+await password_db.read();
+
+
+if (!password_db.data) {
+    password_db.data = { posts: [] }; 
+}
+
+
+const { posts } = password_db.data;
 
 
 const http = express();
