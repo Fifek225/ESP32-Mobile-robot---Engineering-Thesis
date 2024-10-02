@@ -1,8 +1,8 @@
 import * as net from "node:net";
 import express from "express";
 import * as bcrypt from 'bcrypt';
-import { Low } from "lowdb";
-import { FileSync } from "lowdb/adapters/FileSync";
+import { Low, JSONFile } from "lowdb";
+
 
 // User class
 class User {
@@ -13,7 +13,7 @@ class User {
 }
 
 // Initialize the database
-const adapter = new FileSync('users_db.json');
+const adapter = new JSONFile('users_db.json');
 const users_db = new Low(adapter);
 await users_db.read();
 
