@@ -37,11 +37,8 @@ let last_message = null;
 /** @type{net.Socket} */
 let esp_socket = null;
 
-http.use(express.static("static"));
+http.use(express.static("static",{index : 'login.html'}));
 
-http.get("/",(_,res) => {
-    res.redirect(login.html);
-})
 
 http.get("/last_message", (_, res) => {
     res.send(`${last_message}`);
