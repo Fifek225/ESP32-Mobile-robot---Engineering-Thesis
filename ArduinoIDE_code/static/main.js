@@ -22,8 +22,6 @@ function led_state_change(){
 }
 
 
-
-
 led.addEventListener("click",led_state_change)
 setInterval(fetch_messages, 500);
  
