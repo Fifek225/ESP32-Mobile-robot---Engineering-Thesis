@@ -1,20 +1,8 @@
 {
   "users": [
     {
-      "username": "Filip",
-      "password": "MyThesis321"
-    },
-    {
-      "username": "Filip",
-      "password": "$2b$12$vsCrnzIJm1KnEwGsLOfPzebr4kb20KvwDl/t/2./KMzVF2ibWhRLC"
-    },
-    {
-      "username": "FilipKulka",
-      "password": "$2b$12$/uaN0jD7xr16hvNLxAOIkOAT3av.wvgrbTTtxuuJFYzgGYZyB9lCi"
-    },
-    {
-      "username": "FilipKulka",
-      "password": "$2b$12$amvekBro4BnWR.AxdiLwUeQspGoCytP1kXpuQu2MEpoAJ9NK3q.am"
+      "username": "FilipKulka1",
+      "password": "$2b$12$ybOr1x/Krhg3V170XwpHbO8bMxdpfaXyzIEmsRlKQGbcWXi5Ec7Oe"
     }
   ]
 }

@@ -8,7 +8,6 @@ import {  JSONFilePreset } from "lowdb/node";
 
 const defaultData = {users: []};
 const users_db = await JSONFilePreset("users_db.json", defaultData);
-users_db.data = { users: [] }; // Initialize if empty
 await users_db.read();
 
 // Express app and HTTP settings
@@ -27,11 +26,15 @@ let last_message = null;
 let esp_socket = null;
 
 // Middleware to parse request body
-http.use(express.urlencoded({ extended: false })); // Parse form data (application/x-www-form-urlencoded)
+http.use(express.urlencoded({ extended: true })); // Parse form data (application/x-www-form-urlencoded)
 http.use(express.json()); // Parse JSON data
 
 // Serve static files
-http.use(express.static("static", { index: 'login.html' }));
+http.use(express.static("static"));
+
+http.get("/",(_,res) => {
+    res.render("login.ejs");
+})
 
 // Route to fetch last message
 http.get("/last_message", (_, res) => {
@@ -46,21 +49,20 @@ http.post("/led_state", (_, res) => {
 
 // User registration route
 http.get("/login",async (_,res) => {
-    res.render('login.ejs');
+    res.render('login');
 })
 
 http.get("/register", async (_,res) => {
     console.log("reg. Page working");
-    res.render("registration.ejs");
+    res.render("registration");
 })
 
 http.get("/index",async(_,res) => {
-    res.render("index.ejs");
+    res.render("index");
 })
 
 http.post("/register", async (req, res) => {
     try {
-        console.log(users_db.data);
         const saltRounds = 12;
         const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
         console.log("hashing successful");
@@ -72,8 +74,8 @@ http.post("/register", async (req, res) => {
         users_db.data.users.push(new_user);
         console.log("pushing succesful");
         await users_db.write();
-        console.log("writing succesful");
-        console.log(users_db.data);
+
+        console.log("pushing user successful");
         res.redirect('/login');
     } catch (error) {
         console.error(error);
@@ -83,16 +85,14 @@ http.post("/register", async (req, res) => {
 
 // User login route
 http.post('/login', async (req, res) => {
-    const { username_, password_ } = req.body;
     try {
-        const user = users_db.find((user) => user.username === username_);
+        const user = users_db.data.users.find((user) => user.username === req.body.username);
         if (!user) {
-            return res.status(404).send('User not found.');
+            res.render("login");
         }
 
-        const passwordMatch = await bcrypt.compare(password_, user.password);
+        const passwordMatch = await bcrypt.compare(req.body.password, user.password);
         if (passwordMatch) {
-            res.send('Login successful.');
             return res.redirect('/index');
         } else {
             res.status(401).send('Incorrect password.');
