@@ -5,15 +5,21 @@
   "main": "start_server.js",
   "type": "module",
   "scripts": {
+    "start": "nodemon -r esm start_server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Filip Kulka",
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "ejs": "^3.1.10",
+    "esm": "^3.2.25",
     "express": "^4.21.0",
     "lowdb": "^7.0.1",
     "net": "^1.0.2"
   },
-  "keywords": []
+  "keywords": [],
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
 }

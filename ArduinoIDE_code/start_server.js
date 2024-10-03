@@ -1,28 +1,20 @@
 import * as net from "node:net";
 import express from "express";
+import path from "path";
 import * as bcrypt from 'bcrypt';
-import { Low, JSONFile } from "lowdb/node";
+import {  JSONFilePreset } from "lowdb/node";
 
 
-// User class
-class User {
-    constructor(username, password) {
-        this.username = username;
-        this.password = password;
-    }
-}
 
-// Initialize the database
-const adapter = new JSONFile('users_db.json');
-const users_db = new Low(adapter);
+const defaultData = {users: []};
+const users_db = await JSONFilePreset("users_db.json", defaultData);
 await users_db.read();
-
-users_db.data ||= { posts: [] }; // Ensure posts array exists
-
-const { posts } = users_db.data;
 
 // Express app and HTTP settings
 const http = express();
+http.set('view engine','ejs');
+http.set('views', 'static');
+
 const HTTP_PORT = 8080;
 
 // TCP Server settings
@@ -52,20 +44,31 @@ http.post("/led_state", (_, res) => {
 });
 
 // User registration route
+http.get("/login",async (_,res) => {
+    res.render('login.ejs');
+})
+
+http.get("/register", async (_,res) => {
+    console.log("reg. Page working");
+    res.render("registration.ejs");
+})
+
+http.get("/index",async(_,res) => {
+    res.render("index.ejs");
+})
 http.post("/register", async (req, res) => {
-    const { username_, password_ } = req.body;
+    //const { username_, password_ } = req.body;
     try {
         const saltRounds = 12;
-        const hashedPassword = await bcrypt.hash(password_, saltRounds);
-        const user_post = { username: username_, password: hashedPassword };
-        posts.push(user_post); // Update the posts array
-        await users_db.write(); // Write the update to the database
-
-        res.status(201).send('Registration successful.');
-        res.redirect('/login.html');
+        const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+        console.log("hashing succesful");
+        const new_user = {username: req.body.username, password: hashedPassword};
+        await users_db.update(({users}) => users.push(new_user)); // Write the update to the database
+        console.log("pushing user succesful");
+        res.redirect('/login');
     } catch (error) {
         console.error(error);
-        res.status(500).send('An error occurred.');
+        res.status(500).send('An error occurred during registration.');
     }
 });
 
@@ -73,7 +76,7 @@ http.post("/register", async (req, res) => {
 http.post('/login', async (req, res) => {
     const { username_, password_ } = req.body;
     try {
-        const user = posts.find((user) => user.username === username_);
+        const user = users_db.find((user) => user.username === username_);
         if (!user) {
             return res.status(404).send('User not found.');
         }
@@ -81,13 +84,13 @@ http.post('/login', async (req, res) => {
         const passwordMatch = await bcrypt.compare(password_, user.password);
         if (passwordMatch) {
             res.send('Login successful.');
-            return res.redirect('index.html');
+            return res.redirect('/index');
         } else {
             res.status(401).send('Incorrect password.');
         }
     } catch (error) {
         console.log(error);
-        res.status(500).send('An error occurred.');
+        res.status(500).send('An error occurred during login.');
     }
 });
 
