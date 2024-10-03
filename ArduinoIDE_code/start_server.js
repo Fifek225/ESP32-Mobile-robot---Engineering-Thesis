@@ -8,6 +8,7 @@ import {  JSONFilePreset } from "lowdb/node";
 
 const defaultData = {users: []};
 const users_db = await JSONFilePreset("users_db.json", defaultData);
+users_db.data = { users: [] }; // Initialize if empty
 await users_db.read();
 
 // Express app and HTTP settings
@@ -26,7 +27,7 @@ let last_message = null;
 let esp_socket = null;
 
 // Middleware to parse request body
-http.use(express.urlencoded({ extended: true })); // Parse form data (application/x-www-form-urlencoded)
+http.use(express.urlencoded({ extended: false })); // Parse form data (application/x-www-form-urlencoded)
 http.use(express.json()); // Parse JSON data
 
 // Serve static files
@@ -56,15 +57,23 @@ http.get("/register", async (_,res) => {
 http.get("/index",async(_,res) => {
     res.render("index.ejs");
 })
+
 http.post("/register", async (req, res) => {
-    //const { username_, password_ } = req.body;
     try {
+        console.log(users_db.data);
         const saltRounds = 12;
         const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
-        console.log("hashing succesful");
-        const new_user = {username: req.body.username, password: hashedPassword};
-        await users_db.update(({users}) => users.push(new_user)); // Write the update to the database
-        console.log("pushing user succesful");
+        console.log("hashing successful");
+
+        const new_user = { username: req.body.username, password: hashedPassword };
+
+        // Ensure users_db.data exists and has a users array
+        users_db.data = users_db.data || { users: [] }; // Initialize if empty
+        users_db.data.users.push(new_user);
+        console.log("pushing succesful");
+        await users_db.write();
+        console.log("writing succesful");
+        console.log(users_db.data);
         res.redirect('/login');
     } catch (error) {
         console.error(error);
@@ -82,7 +91,7 @@ http.post('/login', async (req, res) => {
         }
 
         const passwordMatch = await bcrypt.compare(password_, user.password);
-        if (passwordMatch) {
+        if (passwordMatch && user) {
             res.send('Login successful.');
             return res.redirect('/index');
         } else {
