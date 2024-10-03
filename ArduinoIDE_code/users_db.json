@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
   "users": [
     {
@@ -6,8 +5,4 @@
       "password": "$2b$12$ybOr1x/Krhg3V170XwpHbO8bMxdpfaXyzIEmsRlKQGbcWXi5Ec7Oe"
     }
   ]
-=======
-{
-    "users": []
->>>>>>> 9f707bd281e0cd8f61f5be5871a90bfea679b333
 }
