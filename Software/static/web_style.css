@@ -53,3 +53,74 @@ img {
         padding: 15px;
     }
 }
+
+/* Movement control section */
+#movement_control {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#movement_control .row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+#movement_control button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 15px;
+    font-size: 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+    width: 60px;
+    height: 60px;
+}
+
+#movement_control button:hover {
+    background-color: #0056b3;
+}
+
+/* Icon-like text for arrow buttons */
+#movement_control button.up::after {
+    content: "↑";
+}
+
+#movement_control button.down::after {
+    content: "↓";
+}
+
+#movement_control button.left::after {
+    content: "←";
+}
+
+#movement_control button.right::after {
+    content: "→";
+}
+
+/* Disabled button styles: make them almost transparent */
+#movement_control button:disabled {
+    background-color: #007bff;
+    opacity: 0.1;  /* Make disabled buttons almost invisible */
+    cursor: not-allowed;
+}
+
+/* Add an "active" state to simulate button press with subtle green */
+#movement_control button.active {
+    background-color: #28a745;  /* Subtle green for active button */
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    #movement_control button {
+        width: 80px;
+        height: 80px;
+        font-size: 24px;
+    }
+}

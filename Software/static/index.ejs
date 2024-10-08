@@ -1,20 +1,31 @@
 <!doctype html>
 <html lang="pl-PL">
     <head>
-    <meta charst = "UTF-8" >
-    <meta name = "viewport" content = "width=device-width,initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content ="ie=edge">
-    <title>Filip's Robot</title>
-    <link href="web_style.css" rel="stylesheet">
-</head>
-<body>
-    <img src = "sznuk.jpg" alt = "good">
-    <div id = "status"></div>
-    <div id = "led_control">
-        <button type="button" id="led">LED</button>
-    </div>
-    <script src = "main.js" type="module" >
-    </script>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Filip's Robot</title>
+        <link href="web_style.css" rel="stylesheet">
+    </head>
+    <body>
+        <img src="sznuk.jpg" alt="good">
+        <div id="status"></div>
+        <div id="led_control">
+            <button type="button" id="led">LED</button>
+        </div>
 
-</body>
+        <!-- Movement control buttons -->
+        <div id="movement_control">
+            <div class="row">
+                <button class="up" id="move_up"></button>
+            </div>
+            <div class="row">
+                <button class="left" id="move_left"></button>
+                <button class="down" id="move_down"></button>
+                <button class="right" id="move_right"></button>
+            </div>
+        </div>
+
+        <script src="main.js" type="module"></script>
+    </body>
 </html>
