@@ -1,0 +1,76 @@
+#include <WiFi.h>
+#include <Arduino.h>
+
+#include "control_functions.h"  // Assuming this file exists and is needed
+
+
+
+// Define motor pins if needed
+// #define FRONT_LEFT_MOTOR_PIN 16
+// #define FRONT_RIGHT_MOTOR_PIN 17
+// #define BACK_LEFT_MOTOR_PIN 18
+// #define BACK_RIGHT_MOTOR_PIN 19
+
+
+
+// WiFi network data
+char ssid[] = "Filip wifi";
+char password[] = "tadeuszsznuk";
+int status = WL_IDLE_STATUS;
+IPAddress server(20, 215, 192, 11);
+
+WiFiClient client;
+
+void setup() {
+  // Initialize Serial communication
+  Serial.begin(115200);
+  disableCore1WDT();
+  Serial.println("Attempting to connect to Network.");
+  Serial.print("SSID: ");
+  Serial.println(ssid);
+
+  // Connect to WiFi
+  status = WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
+    delay(1000);
+  }
+
+  Serial.print("Connected to WiFi Network: ");
+  Serial.println(ssid);
+
+  // Connect to server
+  while (!client.connect(server, 1313)) {
+    Serial.print(".");
+    delay(1000);
+  }
+  Serial.print("ESP32 connected to TCP port 1313");
+  client.print("Pichal kinda cute");
+  client.flush();
+
+
+  // Setup PWM for LED control
+  ledcAttachPin(FRONT_LED_PIN_1,0);
+  ledcAttachPin(FRONT_LED_PIN_2,1);
+
+  ledcSetup(0,LED_FREQUENCY,8);
+  ledcSetup(1,LED_FREQUENCY,8);
+
+
+
+}
+
+void loop() {
+  // Check if data is available from server
+  if (client.available()) {
+    char byte = client.read();  // Read a byte (this returns an int, but we cast to char)
+    Serial.print("Read byte:");
+    Serial.println(byte);
+
+    // CASE - FRONT LEDS
+    set_front_LEDs(byte);
+
+    // CASE - MOTOR CONTROL
+    
+  }
+}

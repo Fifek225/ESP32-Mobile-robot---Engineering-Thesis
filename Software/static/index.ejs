@@ -8,13 +8,18 @@
         <link href="web_style.css" rel="stylesheet">
     </head>
     <body>
+        <!-- Picture of the robot -->
         <img src="sznuk.jpg" alt="good">
         <div id="status"></div>
+        
+        <!-- LED control -->
         <div id="led_control">
-            <button type="button" id="led">LED</button>
+            <button type="button" id="front_LEDs_off">OFF</button>
+            <button type="button" id="front_LEDs_default">ON</button>
+            <button type="button" id="front_LEDs_max">ON (max)</button>
         </div>
 
-        <!-- Movement control buttons -->
+        <!-- Movement/Motor control buttons -->
         <div id="movement_control">
             <div class="row">
                 <button class="up" id="move_up"></button>

@@ -41,11 +41,22 @@ http.get("/last_message", (_, res) => {
     res.send(`${last_message}`);
 });
 
-// Route to control LED state
-http.post("/led_state", (_, res) => {
-    esp_socket.write("l");
-    res.send("LED");
+// Control Front LED state
+http.post("/front_led_off", (_, res) => {
+    esp_socket.write("1");
+    res.send("LED off");
 });
+
+http.post("/front_led_default", (_, res) => {
+    esp_socket.write("2");
+    res.send("LED default");
+});
+
+http.post("/front_led_max", (_, res) => {
+    esp_socket.write("3");
+    res.send("LED max");
+});
+
 
 // User registration route
 http.get("/login",async (_,res) => {

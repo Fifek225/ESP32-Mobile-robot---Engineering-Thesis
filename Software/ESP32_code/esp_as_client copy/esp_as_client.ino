@@ -1,8 +1,17 @@
+// Library inclusions
 #include <WiFi.h>
 
+#define FRONT_LED_PIN_1 14
+#define FRONT_LED_PIN_2 15
+
+#define FRONT_LEFT_MOTOR_PIN
+#define FRONT_RIGHT_MOTOR_PIN
+#define BACK_LEFT_MOTOR_PIN 
+#define BACK_RIGHT_MOTOR_PIN 
+
+//Wifi network data
 char ssid[] = "Filip wifi";
 char password[] = "tadeuszsznuk";
-
 int status = WL_IDLE_STATUS;
 IPAddress server(20,215,192,11);
 
