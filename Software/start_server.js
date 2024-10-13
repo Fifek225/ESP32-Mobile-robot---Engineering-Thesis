@@ -126,12 +126,41 @@ http.post("/front_led_max", (_, res) => {
 http.post("/move_up",(_,res) => {
     esp_socket.write("u");
     res.send("Motor up.");
-})
+});
+http.post("/move_left",(_,res) => {
+    esp_socket.write("l");
+    res.send("Motor left.");
+});
+
+http.post("/move_right",(_,res) => {
+    esp_socket.write("r");
+    res.send("Motor right.");
+});
+
+http.post("/move_down",(_,res) => {
+    esp_socket.write("d");
+    res.send("Motor down.");
+});
 
 http.post("/stop_up",(_,res) => {
     esp_socket.write("s");
-    res.send("Motor stop.");
-})
+    res.send("Stop up.");
+});
+
+http.post("/stop_left",(_,res) => {
+    esp_socket.write("s");
+    res.send("Stop left.");
+});
+
+http.post("/stop_right",(_,res) => {
+    esp_socket.write("s");
+    res.send("Stop right.");
+});
+
+http.post("/stop_down",(_,res) => {
+    esp_socket.write("s");
+    res.send("Stop down.");
+});
 
 // ============== PORT LISTENING SECTION =================================================
 // TCP server logic for handling connections and data

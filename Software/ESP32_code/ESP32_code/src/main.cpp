@@ -57,8 +57,12 @@ void setup() {
   // Setup PWM for motors
   ledcAttachPin(FL_MOTOR_PIN_1,FL_MOTOR_CH_1);
   ledcAttachPin(FL_MOTOR_PIN_2,FL_MOTOR_CH_2);
+  ledcAttachPin(FR_MOTOR_PIN_1,FR_MOTOR_CH_1);
+  ledcAttachPin(FR_MOTOR_PIN_2,FR_MOTOR_CH_2);
   ledcSetup(FL_MOTOR_CH_1,LED_FREQUENCY,8);
   ledcSetup(FL_MOTOR_CH_2,LED_FREQUENCY,8);
+  ledcSetup(FR_MOTOR_CH_1,LED_FREQUENCY,8);
+  ledcSetup(FR_MOTOR_CH_2,LED_FREQUENCY,8);
 
 
 

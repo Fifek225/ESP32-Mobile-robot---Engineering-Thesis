@@ -1,9 +1,7 @@
 #include <control_functions.h>
 #include <Arduino.h>
 
-std::map<char*,char> esp32_commands_map = {
 
-};
 
 int front_led_duty = 80;
 
@@ -12,7 +10,9 @@ int fr_motor_duty = 0;
 int bl_motor_duty = 0;
 int br_motor_duty = 0;
 
-const int max_motor_duty = 200;
+int motor_default_duty = 190;
+const int motor_max_duty = 250;
+char* robot_dir = "stopped";
 
 
 
@@ -31,35 +31,55 @@ void set_front_LEDs(char byte){
 
 void set_back_LEDs(char byte){}
 
+// ================== MOTOR CONTROLS ==========================================
+
 void control_motors(char byte){
     delay(20);
     if(byte == 'u'){
-        fl_motor_duty = 150;
-        set_motor(FL_MOTOR_CH_1,FL_MOTOR_CH_2,"forward",fl_motor_duty);
+        robot_dir = "forward";
+        set_motor(FL_MOTOR_CH_1,FL_MOTOR_CH_2,robot_dir,fl_motor_duty);
+        set_motor(FR_MOTOR_CH_1,FR_MOTOR_CH_2,robot_dir,fr_motor_duty);
     } else if(byte == 'd'){
-        fl_motor_duty = 150;
-        set_motor(FL_MOTOR_CH_1,FL_MOTOR_CH_2,"backwards",fl_motor_duty);
+        robot_dir = "backwards";
+        set_motor(FL_MOTOR_CH_1,FL_MOTOR_CH_2,robot_dir,fl_motor_duty);
+        set_motor(FR_MOTOR_CH_1,FR_MOTOR_CH_2,robot_dir,fr_motor_duty);
     } else if(byte == 'l'){
-        if(fl_motor_duty < max_motor_duty){fl_motor_duty += 50;} else {fl_motor_duty = max_motor_duty;}
-        set_motor(FL_MOTOR_CH_1,FL_MOTOR_CH_2,"forwards",fl_motor_duty);
+        if(robot_dir == "forward"){set_motor(FR_MOTOR_CH_1,FR_MOTOR_CH_2,robot_dir,fr_motor_duty);}
+        else if(robot_dir == "backwards"){set_motor(FR_MOTOR_CH_1,FR_MOTOR_CH_2,robot_dir,fr_motor_duty);}
+        else if(robot_dir == "stopped"){
+            robot_dir = "forward";
+            set_motor(FR_MOTOR_CH_1,FR_MOTOR_CH_2,robot_dir,fr_motor_duty);
+        }
+    } else if(byte == 'r'){
+        if(robot_dir == "forward"){set_motor(FL_MOTOR_CH_1,FL_MOTOR_CH_2,robot_dir,fl_motor_duty);}
+        else if(robot_dir == "backwards"){set_motor(FL_MOTOR_CH_1,FL_MOTOR_CH_2,robot_dir,fl_motor_duty);}
+        else if(robot_dir == "stopped"){
+            robot_dir = "forward";
+            set_motor(FL_MOTOR_CH_1,FL_MOTOR_CH_2,robot_dir,fl_motor_duty);
+        }
     } else if(byte =='s'){
-        fl_motor_duty = 0;
         set_motor(FL_MOTOR_CH_1,FL_MOTOR_CH_2,"stop",fl_motor_duty);
+        set_motor(FR_MOTOR_CH_1,FR_MOTOR_CH_2,"stop",fr_motor_duty);
+
     }
 }
 
-void set_motor(int motor_front_ch, int motor_back_ch, char* direction, int duty){
+void set_motor(int motor_front_ch, int motor_back_ch, const char* direction, int &duty){
+    delay(10);
     if(direction == "forward"){  // Rotate motor so that robot moves forward
-        delay(10);
+        if(duty == 0){duty = motor_default_duty;}
+        else if(duty == motor_default_duty){duty = motor_max_duty;}
         ledcWrite(motor_front_ch,duty);
         ledcWrite(motor_back_ch,0);
     } else if(direction == "backwards") { // Rotate motor so that robot moves backwards
-        delay(10);
+        if(duty == 0){duty = motor_default_duty;}
+        else if(duty == motor_default_duty){duty = motor_max_duty;}
         ledcWrite(motor_front_ch,0);
         ledcWrite(motor_back_ch,duty);
     } else if(direction == "stop"){
-        delay(10);
-        ledcWrite(motor_front_ch,0);
-        ledcWrite(motor_back_ch,0);
+        if(fl_motor_duty == 0 && fr_motor_duty == 0 && bl_motor_duty == 0 && br_motor_duty == 0){robot_dir = "stopped";}
+        if(duty == motor_max_duty){duty = motor_default_duty;} else {duty = 0;}
+        ledcWrite(motor_front_ch,duty);
+        ledcWrite(motor_back_ch,duty);
     }
 }
