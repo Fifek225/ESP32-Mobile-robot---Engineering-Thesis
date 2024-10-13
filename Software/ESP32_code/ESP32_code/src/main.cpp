@@ -45,8 +45,6 @@ void setup() {
     delay(1000);
   }
   Serial.print("ESP32 connected to TCP port 1313");
-  client.print("Pichal kinda cute");
-  client.flush();
 
 
   // Setup PWM for LED control
@@ -55,6 +53,12 @@ void setup() {
 
   ledcSetup(0,LED_FREQUENCY,8);
   ledcSetup(1,LED_FREQUENCY,8);
+
+  // Setup PWM for motors
+  ledcAttachPin(FL_MOTOR_PIN_1,FL_MOTOR_CH_1);
+  ledcAttachPin(FL_MOTOR_PIN_2,FL_MOTOR_CH_2);
+  ledcSetup(FL_MOTOR_CH_1,LED_FREQUENCY,8);
+  ledcSetup(FL_MOTOR_CH_2,LED_FREQUENCY,8);
 
 
 
@@ -71,6 +75,6 @@ void loop() {
     set_front_LEDs(byte);
 
     // CASE - MOTOR CONTROL
-    
+    control_motors(byte);
   }
 }

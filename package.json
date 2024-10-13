@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "open": "^10.1.0"
+  },
+  "name": "esp32-mobile-robot---engineering-thesis",
+  "version": "1.0.0",
+  "description": "This project is my Engineering Thesis at AGH University in Kraków. It is a 4-wheel mobile robot using an ESP32 processor for wireless communication with a PC through Wifi.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

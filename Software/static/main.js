@@ -19,30 +19,29 @@ function fetch_messages() {
     });
 }
 
+// Front LED control functions
+function front_LEDs_off() {
+    const request = new Request("/front_led_off", { method: "POST" });
+    fetch(request).then(
+        response => response.text()
+    );
+}
+function front_LEDs_default() {
+    const request = new Request("/front_led_default", { method: "POST" });
+    fetch(request).then(
+        response => response.text()
+    );
+}
+function front_LEDs_max() {
+    const request = new Request("/front_led_max", { method: "POST" });
+    fetch(request).then(
+        response => response.text()
+    );
+}
 
-// Front LED control funcitons
-function front_LEDs_off(){
-    const request = new Request("/front_led_off",{method: "POST"});
-    fetch(request).then(
-        response => response.text()
-    );
-}
-function front_LEDs_default(){
-    const request = new Request("/front_led_default",{method: "POST"});
-    fetch(request).then(
-        response => response.text()
-    );
-}
-function front_LEDs_max(){
-    const request = new Request("/front_led_max",{method: "POST"});
-    fetch(request).then(
-        response => response.text()
-    );
-}
-
-f_led_off.addEventListener('click',front_LEDs_off);
-f_led_default.addEventListener('click',front_LEDs_default);
-f_led_max.addEventListener('click',front_LEDs_max);
+f_led_off.addEventListener('click', front_LEDs_off);
+f_led_default.addEventListener('click', front_LEDs_default);
+f_led_max.addEventListener('click', front_LEDs_max);
 
 // --------------------------- ROBOT MOVEMENT BUTTONS LOGIC ----------------------------------------------------------------
 // Track active buttons to prevent conflicting presses
@@ -56,7 +55,7 @@ function pressButton(button, oppositeButton, direction, activeTracker) {
         button.classList.add('active');  // Highlight the pressed button with green
         console.log(`Moving ${direction}`);
 
-        const request = new Request(`/move_${direction}`, {method : "POST"});
+        const request = new Request(`/move_${direction}`, { method: "POST" });
         fetch(request).then(
             response => response.text()
         );
@@ -66,12 +65,13 @@ function pressButton(button, oppositeButton, direction, activeTracker) {
 }
 
 // Function to reset the button state and enable the opposite button when key is released
-function releaseButton(button, oppositeButton, activeTracker) {
+function releaseButton(button, oppositeButton, direction,activeTracker) {
     if (activeTracker !== null) {  // Only reset if this is the active button
         button.classList.remove('active');  // Remove the active class to restore default color
         oppositeButton.disabled = false;  // Re-enable the opposite button
 
-        const request = new Request(`/stop_${direction}`, {method : "POST"});
+        // Stop the movement by sending a request to the server
+        const request = new Request(`/stop_${direction}`, { method: "POST" });
         fetch(request).then(
             response => response.text()
         );
@@ -102,19 +102,16 @@ document.addEventListener('keydown', function(event) {
 document.addEventListener('keyup', function(event) {
     switch (event.key) {
         case 'ArrowUp':
-            activeVertical = releaseButton(upButton, downButton, activeVertical);
+            activeVertical = releaseButton(upButton, downButton, 'up', activeVertical);
             break;
         case 'ArrowDown':
-            activeVertical = releaseButton(downButton, upButton, activeVertical);
+            activeVertical = releaseButton(downButton, upButton, 'down', activeVertical);
             break;
         case 'ArrowLeft':
-            activeHorizontal = releaseButton(leftButton, rightButton, activeHorizontal);
+            activeHorizontal = releaseButton(leftButton, rightButton, 'left', activeHorizontal);
             break;
         case 'ArrowRight':
-            activeHorizontal = releaseButton(rightButton, leftButton, activeHorizontal);
+            activeHorizontal = releaseButton(rightButton, leftButton, 'right', activeHorizontal);
             break;
     }
 });
-
-
-
