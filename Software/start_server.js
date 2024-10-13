@@ -148,12 +148,12 @@ http.post("/stop_up",(_,res) => {
 });
 
 http.post("/stop_left",(_,res) => {
-    esp_socket.write("s");
+    esp_socket.write("h");
     res.send("Stop left.");
 });
 
 http.post("/stop_right",(_,res) => {
-    esp_socket.write("s");
+    esp_socket.write("h");
     res.send("Stop right.");
 });
 
