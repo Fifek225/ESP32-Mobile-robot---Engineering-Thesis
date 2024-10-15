@@ -2,28 +2,28 @@
 #define CONTROL_FUNCTIONS_H
 
 
-#define FRONT_LED_PIN_1 14  //Definitions of front LED pins and basic parameters
+#define FRONT_LED_PIN_1 5  //Definitions of front LED pins and basic parameters
 #define FRONT_LED_PIN_2 15
 #define LED_FREQUENCY 100
 
-#define FL_MOTOR_PIN_1 26     // Definitions of pins that will send PWM to their respective motor 
+#define FL_MOTOR_PIN_1 23   // Definitions of pins that will send PWM to their respective motor 
 #define FL_MOTOR_CH_1 4
-#define FL_MOTOR_PIN_2 27
+#define FL_MOTOR_PIN_2 22
 #define FL_MOTOR_CH_2 5
 
-#define FR_MOTOR_PIN_1 12    // Definitions of pins that will send PWM to their respective motor 
+#define FR_MOTOR_PIN_1 21   // Definitions of pins that will send PWM to their respective motor 
 #define FR_MOTOR_CH_1 6
-#define FR_MOTOR_PIN_2 13
+#define FR_MOTOR_PIN_2 19
 #define FR_MOTOR_CH_2 7
 
-#define BL_MOTOR_PIN_1      // Definitions of pins that will send PWM to their respective motor 
+#define BL_MOTOR_PIN_1 18    // Definitions of pins that will send PWM to their respective motor 
 #define BL_MOTOR_CH_1 8
-#define BL_MOTOR_PIN_2
+#define BL_MOTOR_PIN_2 4
 #define BL_MOTOR_CH_2 9
 
-#define BR_MOTOR_PIN_1      // Definitions of pins that will send PWM to their respective motor 
+#define BR_MOTOR_PIN_1 16    // Definitions of pins that will send PWM to their respective motor 
 #define BR_MOTOR_CH_1 10
-#define BR_MOTOR_PIN_2
+#define BR_MOTOR_PIN_2 17
 #define BR_MOTOR_CH_2 11
 
 

@@ -8,6 +8,8 @@ const downButton = document.getElementById('move_down');
 const leftButton = document.getElementById('move_left');
 const rightButton = document.getElementById('move_right');
 
+let keyPressed = {}; // Object to track the state of keys
+
 //Debug function - checks if there is constant communication between the webpage and ESP32
 function fetch_messages() {
     console.log("Fetching messages from server");
@@ -54,7 +56,6 @@ function pressButton(button, oppositeButton, direction, activeTracker) {
         oppositeButton.disabled = true;  // Disable the opposite button
         button.classList.add('active');  // Highlight the pressed button with green
         console.log(`Moving ${direction}`);
-
         const request = new Request(`/move_${direction}`, { method: "POST" });
         fetch(request).then(
             response => response.text()
@@ -65,11 +66,10 @@ function pressButton(button, oppositeButton, direction, activeTracker) {
 }
 
 // Function to reset the button state and enable the opposite button when key is released
-function releaseButton(button, oppositeButton, direction,activeTracker) {
-    if (activeTracker !== null) {  // Only reset if this is the active button
+function releaseButton(button, oppositeButton, direction, activeTracker) {
+    if (activeTracker === direction) {  // Only reset if this is the active button
         button.classList.remove('active');  // Remove the active class to restore default color
         oppositeButton.disabled = false;  // Re-enable the opposite button
-
         // Stop the movement by sending a request to the server
         const request = new Request(`/stop_${direction}`, { method: "POST" });
         fetch(request).then(
@@ -82,35 +82,55 @@ function releaseButton(button, oppositeButton, direction,activeTracker) {
 
 // Event listener for keyboard arrows - press
 document.addEventListener('keydown', function(event) {
-    switch (event.key) {
-        case 'ArrowUp':
-            activeVertical = pressButton(upButton, downButton, 'up', activeVertical);
-            break;
-        case 'ArrowDown':
-            activeVertical = pressButton(downButton, upButton, 'down', activeVertical);
-            break;
-        case 'ArrowLeft':
-            activeHorizontal = pressButton(leftButton, rightButton, 'left', activeHorizontal);
-            break;
-        case 'ArrowRight':
-            activeHorizontal = pressButton(rightButton, leftButton, 'right', activeHorizontal);
-            break;
+    if (!keyPressed[event.key]) { // Check if the key is already pressed
+        keyPressed[event.key] = true; // Mark the key as pressed
+        switch (event.key) {
+            case 'ArrowUp':
+                if (!activeVertical) { // Check if another vertical direction is active
+                    console.log('ArrowUp pressed');
+                    activeVertical = pressButton(upButton, downButton, 'up', activeVertical);
+                }
+                break;
+            case 'ArrowDown':
+                if (!activeVertical) {
+                    console.log('ArrowDown pressed');
+                    activeVertical = pressButton(downButton, upButton, 'down', activeVertical);
+                }
+                break;
+            case 'ArrowLeft':
+                if (!activeHorizontal) {
+                    console.log('ArrowLeft pressed');
+                    activeHorizontal = pressButton(leftButton, rightButton, 'left', activeHorizontal);
+                }
+                break;
+            case 'ArrowRight':
+                if (!activeHorizontal) {
+                    console.log('ArrowRight pressed');
+                    activeHorizontal = pressButton(rightButton, leftButton, 'right', activeHorizontal);
+                }
+                break;
+        }
     }
 });
 
 // Event listener for keyboard arrows - release
 document.addEventListener('keyup', function(event) {
+    keyPressed[event.key] = false; // Mark the key as released
     switch (event.key) {
         case 'ArrowUp':
+            console.log('ArrowUp released');
             activeVertical = releaseButton(upButton, downButton, 'up', activeVertical);
             break;
         case 'ArrowDown':
+            console.log('ArrowDown released');
             activeVertical = releaseButton(downButton, upButton, 'down', activeVertical);
             break;
         case 'ArrowLeft':
+            console.log('ArrowLeft released');
             activeHorizontal = releaseButton(leftButton, rightButton, 'left', activeHorizontal);
             break;
         case 'ArrowRight':
+            console.log('ArrowRight released');
             activeHorizontal = releaseButton(rightButton, leftButton, 'right', activeHorizontal);
             break;
     }

@@ -5,14 +5,6 @@
 
 
 
-// Define motor pins if needed
-// #define FRONT_LEFT_MOTOR_PIN 16
-// #define FRONT_RIGHT_MOTOR_PIN 17
-// #define BACK_LEFT_MOTOR_PIN 18
-// #define BACK_RIGHT_MOTOR_PIN 19
-
-
-
 // WiFi network data
 char ssid[] = "Filip wifi";
 char password[] = "tadeuszsznuk";
@@ -59,11 +51,19 @@ void setup() {
   ledcAttachPin(FL_MOTOR_PIN_2,FL_MOTOR_CH_2);
   ledcAttachPin(FR_MOTOR_PIN_1,FR_MOTOR_CH_1);
   ledcAttachPin(FR_MOTOR_PIN_2,FR_MOTOR_CH_2);
+  ledcAttachPin(BL_MOTOR_PIN_1,BL_MOTOR_CH_1);
+  ledcAttachPin(BL_MOTOR_PIN_2,BL_MOTOR_CH_2);
+  ledcAttachPin(BR_MOTOR_PIN_1,BR_MOTOR_CH_1);
+  ledcAttachPin(BR_MOTOR_PIN_2,BR_MOTOR_CH_2);
+
   ledcSetup(FL_MOTOR_CH_1,LED_FREQUENCY,8);
   ledcSetup(FL_MOTOR_CH_2,LED_FREQUENCY,8);
   ledcSetup(FR_MOTOR_CH_1,LED_FREQUENCY,8);
   ledcSetup(FR_MOTOR_CH_2,LED_FREQUENCY,8);
-
+  ledcSetup(BL_MOTOR_CH_1,LED_FREQUENCY,8);
+  ledcSetup(BL_MOTOR_CH_2,LED_FREQUENCY,8);
+  ledcSetup(BR_MOTOR_CH_1,LED_FREQUENCY,8);
+  ledcSetup(BR_MOTOR_CH_2,LED_FREQUENCY,8);
 
 
 }
