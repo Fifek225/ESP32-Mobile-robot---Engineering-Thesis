@@ -56,14 +56,14 @@ void setup() {
   ledcAttachPin(BR_MOTOR_PIN_1,BR_MOTOR_CH_1);
   ledcAttachPin(BR_MOTOR_PIN_2,BR_MOTOR_CH_2);
 
-  ledcSetup(FL_MOTOR_CH_1,LED_FREQUENCY,8);
-  ledcSetup(FL_MOTOR_CH_2,LED_FREQUENCY,8);
-  ledcSetup(FR_MOTOR_CH_1,LED_FREQUENCY,8);
-  ledcSetup(FR_MOTOR_CH_2,LED_FREQUENCY,8);
-  ledcSetup(BL_MOTOR_CH_1,LED_FREQUENCY,8);
-  ledcSetup(BL_MOTOR_CH_2,LED_FREQUENCY,8);
-  ledcSetup(BR_MOTOR_CH_1,LED_FREQUENCY,8);
-  ledcSetup(BR_MOTOR_CH_2,LED_FREQUENCY,8);
+  ledcSetup(FL_MOTOR_CH_1,MOTOR_FREQUENCY,8);
+  ledcSetup(FL_MOTOR_CH_2,MOTOR_FREQUENCY,8);
+  ledcSetup(FR_MOTOR_CH_1,MOTOR_FREQUENCY,8);
+  ledcSetup(FR_MOTOR_CH_2,MOTOR_FREQUENCY,8);
+  ledcSetup(BL_MOTOR_CH_1,MOTOR_FREQUENCY,8);
+  ledcSetup(BL_MOTOR_CH_2,MOTOR_FREQUENCY,8);
+  ledcSetup(BR_MOTOR_CH_1,MOTOR_FREQUENCY,8);
+  ledcSetup(BR_MOTOR_CH_2,MOTOR_FREQUENCY,8);
 
 
 }
@@ -76,7 +76,7 @@ void loop() {
     Serial.println(byte);
 
     // CASE - FRONT LEDS
-    set_front_LEDs(byte);
+    //set_front_LEDs(byte);
 
     // CASE - MOTOR CONTROL
     control_motors(byte);
