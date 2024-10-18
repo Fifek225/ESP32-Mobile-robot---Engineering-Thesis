@@ -3,7 +3,10 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f0f0f0;
+
+    /* Solid emerald green with 25% opacity */
+    background-color: rgba(57, 124, 155, 0.35); /* 25% opacity */
+    
     color: #333;
     text-align: center;
 }
@@ -25,9 +28,18 @@ img {
     color: #0056b3;
 }
 
+/* LED control text styling */
+#led_text, #movement_text {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-top: 30px;
+    color: #333;
+}
+
 /* LED control section */
 #led_control {
-    margin-top: 30px;
+    margin-top: 10px;
 }
 
 #led_control button {
@@ -41,6 +53,12 @@ img {
     transition: background-color 0.3s ease;
 }
 
+/* LED active state (green) */
+#led_control button.active {
+    background-color: #28a745; /* Green for active LED button */
+}
+
+/* LED hover */
 #led_control button:hover {
     background-color: #0056b3;
 }

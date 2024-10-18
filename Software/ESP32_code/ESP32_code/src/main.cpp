@@ -41,10 +41,10 @@ void setup() {
 
   // Setup PWM for LED control
   ledcAttachPin(FRONT_LED_PIN_1,0);
-  ledcAttachPin(FRONT_LED_PIN_2,1);
+  //ledcAttachPin(FRONT_LED_PIN_2,1);
 
   ledcSetup(0,LED_FREQUENCY,8);
-  ledcSetup(1,LED_FREQUENCY,8);
+  //ledcSetup(1,LED_FREQUENCY,8);
 
   // Setup PWM for motors
   ledcAttachPin(FL_MOTOR_PIN_1,FL_MOTOR_CH_1);
@@ -76,7 +76,7 @@ void loop() {
     Serial.println(byte);
 
     // CASE - FRONT LEDS
-    //set_front_LEDs(byte);
+    set_front_LEDs(byte);
 
     // CASE - MOTOR CONTROL
     control_motors(byte);

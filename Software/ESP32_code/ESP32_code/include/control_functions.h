@@ -3,7 +3,6 @@
 
 
 #define FRONT_LED_PIN_1 5  //Definitions of front LED pins and basic parameters
-#define FRONT_LED_PIN_2 15
 #define LED_FREQUENCY 100
 #define MOTOR_FREQUENCY 5000
 

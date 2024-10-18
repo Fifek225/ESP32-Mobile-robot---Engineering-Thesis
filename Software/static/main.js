@@ -41,6 +41,27 @@ function front_LEDs_max() {
     );
 }
 
+// JavaScript to handle LED button active state
+document.addEventListener('DOMContentLoaded', () => {
+    const ledButtons = document.querySelectorAll('#led_control button');
+
+    // Initially set the "ON" button (middle one) as active (green)
+    let activeButton = document.querySelector('#front_LEDs_default');
+    activeButton.classList.add('active');
+
+    // Add click event listener to each LED button
+    ledButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Remove 'active' class from the currently active button
+            activeButton.classList.remove('active');
+
+            // Add 'active' class to the clicked button and set it as the active button
+            button.classList.add('active');
+            activeButton = button;
+        });
+    });
+});
+
 f_led_off.addEventListener('click', front_LEDs_off);
 f_led_default.addEventListener('click', front_LEDs_default);
 f_led_max.addEventListener('click', front_LEDs_max);
@@ -113,6 +134,8 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
+
+
 // Event listener for keyboard arrows - release
 document.addEventListener('keyup', function(event) {
     keyPressed[event.key] = false; // Mark the key as released
@@ -135,3 +158,4 @@ document.addEventListener('keyup', function(event) {
             break;
     }
 });
+
