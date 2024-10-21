@@ -159,3 +159,19 @@ document.addEventListener('keyup', function(event) {
     }
 });
 
+// ======================= CAMERA IMAGE HANDLING ===============================
+var camera_img = document.getElementById('camera_img');
+var canvas = document.getElementById("canvas");
+var context = canvas.getContext("2d");
+
+
+function setCameraImage() {
+    const timestamp = new Date().getTime();  // Get the current timestamp
+    camera_img.src = `camera_image.jpg?${timestamp}`;  // Set the src with a timestamp to prevent caching
+    camera_img.onload = function() {
+        // Optional: Perform any processing after the image loads
+        console.log("Image loaded and displayed");
+    };
+}
+
+setInterval(setCameraImage, 50);  // Update the image every 50 miliseconds

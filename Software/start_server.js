@@ -2,7 +2,7 @@ import * as net from "node:net";
 import express from "express";
 import * as bcrypt from 'bcrypt';
 import {  JSONFilePreset } from "lowdb/node";
-import open from "open";
+import fs from "fs";
 
 // ======================= SERVER SETUP ===============================================
 // Setup for user database using lowdb
@@ -122,7 +122,7 @@ http.post("/front_led_max", (_, res) => {
     res.send("LED max");
 });
 
-// ============== MOTOR CONTROL ==========================================================
+// ================================ MOTOR CONTROL ==========================================================
 http.post("/move_up",(_,res) => {
     esp_socket.write("u");
     res.send("Motor up.");
@@ -162,18 +162,65 @@ http.post("/stop_down",(_,res) => {
     res.send("Stop down.");
 });
 
-// ============== PORT LISTENING SECTION =================================================
+
+// ============================ CAMERA IMAGE RECEIVING SECTION ==========================
+
+let video_buffer = Buffer.alloc(0);  // Initialize an empty buffer
+const image_path = 'static/camera_image.jpg';  // Path to save the image
+
+tcp_cam.on("connection", (socket) => {
+    esp_cam_socket = socket;
+    console.log("Communication with ESP32 Camera module established.");
+
+    socket.on('data', (data) => {
+        console.log("Received data chunk of size:", data.length);
+        // Append new data to the buffer
+        video_buffer = Buffer.concat([video_buffer, data]);
+    });
+
+    socket.on('end', () => {
+        console.log("Camera TCP port connection closed. Writing image to file.");
+
+        // Write the complete buffer to a file when the connection is closed
+        fs.writeFile(image_path, video_buffer, 'binary', (err) => {
+            if (err) {
+                console.error("Error saving video buffer as image:", err);
+            } else {
+                console.log("Image saved successfully as camera_image.jpg");
+            }
+            // Reset the buffer after the image is saved
+            video_buffer = Buffer.alloc(0);
+        });
+    });
+
+    socket.on('error', (err) => {
+        console.error("Error on TCP connection:", err);
+    });
+});
+
+
+// http.get('/camera_img', (_, res) => {
+//     console.log("cam img request");
+//     fs.readFile(image_path, (err, data) => {
+//         if (err) {
+//             res.status(500).send('Error loading image.');
+//             return;
+//         }
+//         res.contentType('image/jpeg');
+//         res.send(data);
+//     });
+// });
+
+tcp_cam.listen(TCP_PORT_CAM, "0.0.0.0", () => {
+    console.log(`Server listening on port ${TCP_PORT_CAM}`);
+});
+
+// ============================ MAIN BOARD PORT LISTENING SECTION ==================================
 // TCP server logic for handling connections and data
 tcp.on("connection", (socket) => {
     esp_socket = socket;
     console.log("Communication with ESP32 main board established.");
 });
-
-tcp_cam.on("connection",(socket) => {
-    esp_cam_socket = socket;
-    console.log("Communication with ESP32 Camera module established.");
-
-})
 
 
 // Start the HTTP server
@@ -183,8 +230,4 @@ http.listen(HTTP_PORT, "0.0.0.0", async () => {
 // Start the TCP server
 tcp.listen(TCP_PORT, "0.0.0.0", () => {
     console.log(`Server listening on port ${TCP_PORT}`);
-});
-
-tcp_cam.listen(TCP_PORT_CAM, "0.0.0.0", () => {
-    console.log(`Server listening on port ${TCP_PORT_CAM}`);
 });
