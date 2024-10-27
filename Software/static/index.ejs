@@ -6,7 +6,7 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>Filip's Robot</title>
         <link href="web_style.css" rel="stylesheet">
-        <script async src="https://docs.opencv.org/master/opencv.js" type="text/javascript"></script>
+        <script async src=" https://docs.opencv.org/master/opencv.js" type="text/javascript"></script>
     </head>
     <body>
         <!-- Picture of the robot -->
@@ -20,6 +20,9 @@
             <button type="button" id="front_LEDs_default" class="active">ON</button>
             <button type="button" id="front_LEDs_max">ON (max)</button>
         </div>
+
+        <!-- Adding space with line breaks -->
+        <br><br><br>
 
         <!-- Movement Control -->
         <div id="movement_text">Movement</div>
@@ -35,26 +38,27 @@
         </div>
 
         <!-- Video stream -->
-        <div>
-            <img id="camera_img" src="default_cam.jpg" alt="No image"/>
-            <canvas id="canvas" style="display:none"></canvas>
+         <div>
+            <img id = "camera_img" src = "default_cam.jpg" alt = "No image"/>
+            <canvas id = "canvas" style = "display:none"></canvas>
         </div>
 
         <!-- Distance sensor readings-->
         <h1>Distance Sensors Data</h1>
+
+        <!-- front bar -->
+        <div class="bar-container">
+            <div class="bar" id="front-bar"></div>
+            <div class="label" id="front-label">Front distance: -------- cm</div>
+        </div>
+
+        <!-- Car image -->
         <img id="car-image" src="car.jpg" alt="Car" />
 
-        <!-- Distance indicator bars -->
-        <div class="distance-indicator">
-            <div class="bar-container">
-                <div class="bar" id="above-bar"></div>
-                <div class="label" id="above-label">Front distance: -------- cm</div>
-            </div>
-
-            <div class="bar-container">
-                <div class="bar" id="below-bar"></div>
-                <div class="label" id="below-label">Back distance: -------- cm</div>
-            </div>
+        <!-- back bar -->
+        <div class="bar-container">
+            <div class="bar" id="back-bar"></div>
+            <div class="label" id="back-label">Back distance: -------- cm</div>
         </div>
 
         <script src="main.js" type="module"></script>
