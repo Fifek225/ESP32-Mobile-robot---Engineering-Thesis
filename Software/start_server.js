@@ -25,7 +25,7 @@ const tcp = net.createServer();
 const TCP_PORT_CAM = 1314;
 const tcp_cam = net.createServer();
 
-
+let last_message = null;
 /** @type {net.Socket} */
 let esp_socket = null;
 let esp_cam_socket = null;
@@ -34,32 +34,31 @@ let esp_cam_socket = null;
 http.use(express.urlencoded({ extended: true })); // Parse form data (application/x-www-form-urlencoded)
 http.use(express.json()); // Parse JSON data
 
-function isAuthenticated(req, res, next) {
-    if (req.session.isAuthenticated) {
-        return next();
-    }
-    res.redirect('/login');
-}
+// Serve static files
+http.use(express.static("static"));
 
-// Routes
+// Take user to login first
+http.get("/",(_,res) => {
+    res.render("login.ejs");
+})
 
-// Take user to login page
-http.get("/login", (_, res) => {
+// Take user to login
+http.get("/login",async (_,res) => {
     res.render('login');
-});
+})
 
-// Take user to registration page
-http.get("/register", (_, res) => {
+// Take user to registration
+http.get("/register", async (_,res) => {
     console.log("reg. Page working");
     res.render("registration");
-});
+})
 
-// Take user to main page, protected by isAuthenticated middleware
-http.get("/index", isAuthenticated, (_, res) => {
+// Take user to main page
+http.get("/index",async(_,res) => {
     res.render("index");
-});
+})
 
-// Create new user and save their data
+// Create new user and put their data into users_db.json
 http.post("/register", async (req, res) => {
     try {
         const saltRounds = 12;
@@ -68,11 +67,13 @@ http.post("/register", async (req, res) => {
 
         const new_user = { username: req.body.username, password: hashedPassword };
 
-        users_db.data = users_db.data || { users: [] };
+        // Ensure users_db.data exists and has a users array
+        users_db.data = users_db.data || { users: [] }; // Initialize if empty
         users_db.data.users.push(new_user);
-        console.log("pushing successful");
+        console.log("pushing succesful");
         await users_db.write();
 
+        console.log("pushing user successful");
         res.redirect('/login');
     } catch (error) {
         console.error(error);
@@ -80,17 +81,17 @@ http.post("/register", async (req, res) => {
     }
 });
 
-// User login route
+// =================================== USER VERIFICATION =====================================================
+// Verify username and password types in login.ejs
 http.post('/login', async (req, res) => {
     try {
         const user = users_db.data.users.find((user) => user.username === req.body.username);
         if (!user) {
-            return res.render("login");
+            res.render("login");
         }
 
         const passwordMatch = await bcrypt.compare(req.body.password, user.password);
         if (passwordMatch) {
-            req.session.isAuthenticated = true;
             return res.redirect('/index');
         } else {
             res.status(401).send('Incorrect password.');
@@ -225,7 +226,8 @@ tcp_cam.listen(TCP_PORT_CAM, "0.0.0.0", () => {
 let distance_val = null;  // Variable to store the latest distance data
 let distanceSensorConnected = false;  // Flag to track the connection status
 
-http.get('/front-distance', (_,res) => {
+
+http.get('/distance', (_,res) => {
     res.json({front_distance: distance_val,
         connected: distanceSensorConnected
     });
@@ -244,6 +246,7 @@ tcp.on("connection", (socket) => {
         // If incoming data is from a Front distance sensor
         if(message.startsWith('FD: ')){ 
             distance_val = parseFloat(message.slice(3));
+
         }
     })
 
@@ -257,6 +260,12 @@ tcp.on("connection", (socket) => {
         distanceSensorConnected = false;  // Mark as disconnected
     });
 
+    // setInterval(() => {
+    //     if (distanceSensorConnected && Date.now() - lastDistanceTimestamp > TCP_TIMEOUT) {
+    //         console.log("Distance sensor is not sending data. Marking as disconnected.");
+    //         distanceSensorConnected = false;  // Set as disconnected if no data recently
+    //     }
+    // }, TCP_TIMEOUT);
 });
 
 
