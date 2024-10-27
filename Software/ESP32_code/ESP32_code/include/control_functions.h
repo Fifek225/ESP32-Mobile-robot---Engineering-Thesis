@@ -1,6 +1,8 @@
 #ifndef CONTROL_FUNCTIONS_H
 #define CONTROL_FUNCTIONS_H
 
+#include <WiFi.h>
+#include <Arduino.h>
 
 #define FRONT_LED_PIN_1 5  //Definitions of front LED pins and basic parameters
 #define LED_FREQUENCY 100
@@ -21,10 +23,15 @@
 #define BL_MOTOR_PIN_2 4
 #define BL_MOTOR_CH_2 9
 
-#define BR_MOTOR_PIN_1 16    // Definitions of pins that will send PWM to their respective motor 
+//#define BR_MOTOR_PIN_1 16    // Definitions of pins that will send PWM to their respective motor 
 #define BR_MOTOR_CH_1 10
-#define BR_MOTOR_PIN_2 17
+//#define BR_MOTOR_PIN_2 17
 #define BR_MOTOR_CH_2 11
+
+#define FRONT_DISTANCE_SENSOR_TRIG_PIN 16
+#define FRONT_DISTANCE_SENSOR_ECHO_PIN 17
+#define SOUND_SPEED 0.034
+
 
 
 
@@ -42,5 +49,7 @@ void control_motors(char byte);
 void set_motor(int motor_front_ch, int motor_back_ch, const char* dir_vertical, const char* dir_horizontal, int &duty);
 
 void stop_motor(int motor_front_ch, int motor_back_ch, const char* dir_vertical, const char* dir_horizontal, int &duty);
+
+void get_distance(int trig_pin, int echo_pin, WiFiClient &client);
 
 #endif

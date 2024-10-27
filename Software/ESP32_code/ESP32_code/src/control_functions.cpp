@@ -1,6 +1,4 @@
 #include <control_functions.h>
-#include <Arduino.h>
-
 
 
 int front_led_duty = 80;
@@ -17,6 +15,9 @@ const int motor_mid_duty = 190;
 char* robot_dir_horizontal = "none";
 char* robot_dir_vertical = "none";
 
+long duration, distance;
+char distance_buff[40];
+int distance_len = 0;
 
 
 // Sets the state of fron LEDs
@@ -125,4 +126,24 @@ void stop_motor(int motor_front_ch, int motor_back_ch, const char* dir_vertical,
         ledcWrite(motor_front_ch,0);
         ledcWrite(motor_back_ch,duty);
     }
+}
+
+
+void get_distance(int trig_pin, int echo_pin, WiFiClient &client) {
+    // Trigger the ultrasonic sensor
+    digitalWrite(trig_pin, LOW);
+    delayMicroseconds(5);
+    digitalWrite(trig_pin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trig_pin, LOW);
+    pinMode(echo_pin, INPUT);
+
+    duration = pulseIn(echo_pin, HIGH);
+    distance = (duration / 2) * SOUND_SPEED;
+    distance_len = snprintf(distance_buff, sizeof(distance_buff), "FD: %ld\n", distance);
+
+    if (client.connected() && distance_len > 0) {
+        client.write((const uint8_t*)distance_buff, distance_len);
+    }
+    delay(20);
 }

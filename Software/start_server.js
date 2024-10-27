@@ -167,9 +167,13 @@ http.post("/stop_down",(_,res) => {
 
 let video_buffer = Buffer.alloc(0);  // Initialize an empty buffer
 const image_path = 'static/camera_image.jpg';  // Path to save the image
+let cameraConnected = false;
+const CAMERA_TIMEOUT = 2000;
+
 
 tcp_cam.on("connection", (socket) => {
     esp_cam_socket = socket;
+    cameraConnected = true;
     console.log("Communication with ESP32 Camera module established.");
 
     socket.on('data', (data) => {
@@ -191,6 +195,7 @@ tcp_cam.on("connection", (socket) => {
             // Reset the buffer after the image is saved
             video_buffer = Buffer.alloc(0);
         });
+        cameraConnected = false;
     });
 
     socket.on('error', (err) => {
@@ -198,28 +203,71 @@ tcp_cam.on("connection", (socket) => {
     });
 });
 
+// setInterval(() => {
+//     if (cameraConnected && Date.now() - lastDataTimestamp > CAMERA_TIMEOUT) {
+//         console.log("Camera is not sending data. Marking as disconnected.");
+//         cameraConnected = false;  // Set as disconnected if no data recently
+//     }
+// }, CAMERA_TIMEOUT);
 
-// http.get('/camera_img', (_, res) => {
-//     console.log("cam img request");
-//     fs.readFile(image_path, (err, data) => {
-//         if (err) {
-//             res.status(500).send('Error loading image.');
-//             return;
-//         }
-//         res.contentType('image/jpeg');
-//         res.send(data);
-//     });
-// });
+http.get('/is_camera_connected', (_, res) => {
+    res.json({ connected: cameraConnected });
+});
+
 
 tcp_cam.listen(TCP_PORT_CAM, "0.0.0.0", () => {
     console.log(`Server listening on port ${TCP_PORT_CAM}`);
 });
 
-// ============================ MAIN BOARD PORT LISTENING SECTION ==================================
+
+
+// ============================ DISTANCE SENSOR DATA CONVERSION ====================================
+
+let distance_val = null;  // Variable to store the latest distance data
+let distanceSensorConnected = false;  // Flag to track the connection status
+let lastDistanceTimestamp = Date.now();  // Track the last data reception time
+const TCP_TIMEOUT = 2000;  // Timeout for considering the sensor disconnected
+
+http.get('/distance', (_,res) => {
+    res.json({front_distance: distance_val,
+        connected: distanceSensorConnected
+    });
+})
+
+
+// ============================ MAIN BOARD TCP PORT LISTENING & DATA COLLETION  ==================================
 // TCP server logic for handling connections and data
 tcp.on("connection", (socket) => {
     esp_socket = socket;
     console.log("Communication with ESP32 main board established.");
+    distanceSensorConnected = true;
+
+    socket.on('data', (data) => {
+        const message = data.toString().trim();
+        // If incoming data is from a Front distance sensor
+        if(message.startsWith('FD: ')){ 
+            distance_val = parseFloat(message.slice(3));
+            console.log("Distance sensor reading: ");
+            console.log(distance_val);
+        }
+    })
+
+    socket.on('end', () => {
+        console.log("Connection with ESP32 main board ended.");
+        distanceSensorConnected = false; 
+    });
+
+    socket.on('error', (err) => {
+        console.error("Connection with ESP32 main board was broken", err);
+        distanceSensorConnected = false;  // Mark as disconnected
+    });
+
+    // setInterval(() => {
+    //     if (distanceSensorConnected && Date.now() - lastDistanceTimestamp > TCP_TIMEOUT) {
+    //         console.log("Distance sensor is not sending data. Marking as disconnected.");
+    //         distanceSensorConnected = false;  // Set as disconnected if no data recently
+    //     }
+    // }, TCP_TIMEOUT);
 });
 
 

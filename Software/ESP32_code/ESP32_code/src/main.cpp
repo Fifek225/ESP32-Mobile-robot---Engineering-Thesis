@@ -53,8 +53,8 @@ void setup() {
   ledcAttachPin(FR_MOTOR_PIN_2,FR_MOTOR_CH_2);
   ledcAttachPin(BL_MOTOR_PIN_1,BL_MOTOR_CH_1);
   ledcAttachPin(BL_MOTOR_PIN_2,BL_MOTOR_CH_2);
-  ledcAttachPin(BR_MOTOR_PIN_1,BR_MOTOR_CH_1);
-  ledcAttachPin(BR_MOTOR_PIN_2,BR_MOTOR_CH_2);
+  //ledcAttachPin(BR_MOTOR_PIN_1,BR_MOTOR_CH_1);
+  //ledcAttachPin(BR_MOTOR_PIN_2,BR_MOTOR_CH_2);
 
   ledcSetup(FL_MOTOR_CH_1,MOTOR_FREQUENCY,8);
   ledcSetup(FL_MOTOR_CH_2,MOTOR_FREQUENCY,8);
@@ -62,23 +62,32 @@ void setup() {
   ledcSetup(FR_MOTOR_CH_2,MOTOR_FREQUENCY,8);
   ledcSetup(BL_MOTOR_CH_1,MOTOR_FREQUENCY,8);
   ledcSetup(BL_MOTOR_CH_2,MOTOR_FREQUENCY,8);
-  ledcSetup(BR_MOTOR_CH_1,MOTOR_FREQUENCY,8);
-  ledcSetup(BR_MOTOR_CH_2,MOTOR_FREQUENCY,8);
+  //ledcSetup(BR_MOTOR_CH_1,MOTOR_FREQUENCY,8);
+  //ledcSetup(BR_MOTOR_CH_2,MOTOR_FREQUENCY,8);
 
+  // Setup for distance sensors
+  pinMode(FRONT_DISTANCE_SENSOR_TRIG_PIN,OUTPUT);
+  pinMode(FRONT_DISTANCE_SENSOR_ECHO_PIN,INPUT);
 
 }
 
 void loop() {
   // Check if data is available from server
-  if (client.available()) {
+  if(client.connected()){
+    if (client.available()) {
     char byte = client.read();  // Read a byte (this returns an int, but we cast to char)
     Serial.print("Read byte:");
     Serial.println(byte);
 
-    // CASE - FRONT LEDS
+    // CASE - FRONT LEDS INPUT
     set_front_LEDs(byte);
 
-    // CASE - MOTOR CONTROL
+    // CASE - MOTOR CONTROL INPUT
     control_motors(byte);
+
+    }
+    // CASE - DISTANCE SENSOR OUTPUT
+    get_distance(FRONT_DISTANCE_SENSOR_TRIG_PIN,FRONT_DISTANCE_SENSOR_ECHO_PIN,client);
   }
+  
 }
