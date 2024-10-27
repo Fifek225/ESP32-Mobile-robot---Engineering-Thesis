@@ -145,5 +145,5 @@ void get_distance(int trig_pin, int echo_pin, WiFiClient &client) {
     if (client.connected() && distance_len > 0) {
         client.write((const uint8_t*)distance_buff, distance_len);
     }
-    delay(20);
+    delay(30);
 }

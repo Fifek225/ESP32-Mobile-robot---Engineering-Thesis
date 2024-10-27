@@ -29,7 +29,7 @@ img {
 }
 
 /* LED control text styling */
-#led_text, #movement_text {
+#led_text, #movement_text, #distance_text {
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 10px;
@@ -151,34 +151,30 @@ img {
     border-radius: 8px;
 }
 
-/* Distance sensor bar styling */
-.distance-indicator {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-    margin-top: 20px;
-}
-
-/* Container for each bar */
-.bar-container {
-    width: 30px; /* Width of each bar */
-    height: 150px; /* Max height of each bar */
-    background-color: #ddd;
-    border-radius: 5px;
+/* Cone container styling */
+.cone-container {
     position: relative;
+    width: 90px; /* Width of the cone */
+    height: 100px; /* Height of the cone */
+    background: conic-gradient(#ddd, #ddd); /* Default empty color */
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%); /* Creates cone shape */
     overflow: hidden;
-    margin: 10px auto; /* Center bars horizontally and add margin */
+    margin: 10px auto; /* Center cones horizontally */
 }
 
-/* Distance bar */
-.bar {
+/* Rotate the front cone container */
+.front-cone-container {
+    transform: rotate(180deg); /* Flip the front cone upside down */
+}
+
+/* Cone fill element */
+.cone-fill {
+    position: absolute;
+    top: 0; /* Anchored to the top so it fills downward */
     width: 100%;
     height: 0%; /* Initial height, dynamically set */
-    position: absolute;
-    bottom: 0;
-    align-items: center;
-    background-color: green;
+    background: green; /* Default color */
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%); /* Matches cone shape */
     transition: height 0.3s ease, background-color 0.3s ease;
 }
 
@@ -192,14 +188,14 @@ img {
 }
 
 /* Additional Styling for the Distance Bars Based on Proximity */
-.bar.green {
+.cone-fill.green {
     background-color: green;
 }
 
-.bar.orange {
+.cone-fill.orange {
     background-color: orange;
 }
 
-.bar.red {
+.cone-fill.red {
     background-color: red;
 }

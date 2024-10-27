@@ -187,78 +187,69 @@ setInterval(setCameraImage, 50);  // Update the image every 50 miliseconds
 
 // ======================= DISTANCE SENSOR DATA HANDLING ===============================
 
-// function updateDistanceDisplay() {
-//     fetch('/distance')
-//         .then(response => response.json())
-//         .then(data => {
-//             const distanceDisplay = document.getElementById('front-distance-display');
-//             if (data.connected) {
-//                 // Sensor is connected, display distance
-//                 distanceDisplay.textContent = Front sensor: ${data.front_distance !== null ? data.front_distance : 'No data'} cm;
-//             } else {
-//                 // Sensor is disconnected, show placeholder
-//                 distanceDisplay.textContent = Front sensor: No data;
-//             }
-//         })
-//         .catch(error => {
-//             console.error("Error fetching distance data:", error);
-//             document.getElementById('distance-display').textContent = Front sensor: No data; // Fall back to placeholder
-//         });
-// }
-
-// // Update the distance display every 50 milliseconds
-// setInterval(updateDistanceDisplay, 50);
-
 function updateDistanceDisplay() {
-    fetch('/distance')
+    fetch('/front-distance')
         .then(response => response.json())
         .then(data => {
             const frontBar = document.getElementById('front-bar');
-            const backBar = document.getElementById('back-bar');
-            const frontLabel = document.getElementById('front-label');
-            const backLabel = document.getElementById('back-label');
+            //const backBar = document.getElementById('back-bar');
             const frontText = document.getElementById('front-distance-value');
-            const backText = document.getElementById('back-distance-value');
+            //const backText = document.getElementById('back-distance-value');
             
             // Update the labels
             if (data.connected) {
                 const distance = data.front_distance !== null ? data.front_distance : 0;
-                //frontLabel.textContent = `Distance: ${distance} cm`;
-                //backLabel.textContent = `Distance: ${distance} cm`;
                 frontText.textContent = `Distance: ${distance} cm`;
-                backText.textContent = `Distance: ${distance} cm`;
+                //backText.textContent = `Distance: ${distance} cm`;
 
-                
-                // Calculate the height of the bars based on the distance
+                // Calculate the height of the cones based on the distance
                 // Assuming max distance is 50 cm, so height will range from 0 to 100%
                 const maxDistance = 50;
                 const heightPercentage = Math.max(0, Math.min(1, (maxDistance - distance) / maxDistance)) * 100;
 
-                // Set the color and height for the front bar
+                // Set the color and height for the front cone
                 frontBar.style.height = `${heightPercentage}%`;
-                frontBar.style.backgroundColor = heightPercentage < 60 ? 'green' : (heightPercentage < 85 ? 'orange' : 'red');
+                if (heightPercentage < 60) {
+                    frontBar.classList.add('green');
+                    frontBar.classList.remove('orange', 'red');
+                } else if (heightPercentage < 85) {
+                    frontBar.classList.add('orange');
+                    frontBar.classList.remove('green', 'red');
+                } else {
+                    frontBar.classList.add('red');
+                    frontBar.classList.remove('green', 'orange');
+                }
 
-                // Set the color and height for the back bar (similar logic)
-                backBar.style.height = `${heightPercentage}%`;
-                backBar.style.backgroundColor = heightPercentage < 60 ? 'green' : (heightPercentage < 85 ? 'orange' : 'red');
+                // // Set the color and height for the back cone (similar logic)
+                // backBar.style.height = `${heightPercentage}%`;
+                // if (heightPercentage < 60) {
+                //     backBar.classList.add('green');
+                //     backBar.classList.remove('orange', 'red');
+                // } else if (heightPercentage < 85) {
+                //     backBar.classList.add('orange');
+                //     backBar.classList.remove('green', 'red');
+                // } else {
+                //     backBar.classList.add('red');
+                //     backBar.classList.remove('green', 'orange');
+                // }
             } else {
                 // Sensor is disconnected, show placeholder
-                //frontLabel.textContent = 'Distance: -------- cm';
-                //backLabel.textContent = 'Distance: -------- cm';
                 frontText.textContent = `Distance: No data`;
-                backText.textContent = `Distance: No data`;
+                //backText.textContent = `Distance: No data`;
                 frontBar.style.height = '0%';
-                backBar.style.height = '0%';
+                //backBar.style.height = '0%';
+                frontBar.classList.remove('green', 'orange', 'red');
+                //backBar.classList.remove('green', 'orange', 'red');
             }
         })
         .catch(error => {
             console.error("Error fetching distance data:", error);
-            document.getElementById('front-label').textContent = 'Distance: -------- cm';  // Fall back to placeholder
-            document.getElementById('back-label').textContent = 'Distance: -------- cm';  // Fall back to placeholder
-            document.getElementById('front-bar').style.height = '0%';  // Reset bar height
-            document.getElementById('back-bar').style.height = '0%';  // Reset bar height
+            document.getElementById('front-label').textContent = 'Distance: -------- cm';
+            //document.getElementById('back-label').textContent = 'Distance: -------- cm';
+            document.getElementById('front-bar').style.height = '0%';
+            //document.getElementById('back-bar').style.height = '0%';
         });
 }
 
-// Update the distance display every 50 milliseconds
-setInterval(updateDistanceDisplay, 50);
+// Update the distance display every 25 milliseconds
+setInterval(updateDistanceDisplay, 32);

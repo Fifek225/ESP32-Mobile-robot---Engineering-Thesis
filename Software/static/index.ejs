@@ -43,25 +43,24 @@
             <canvas id = "canvas" style = "display:none"></canvas>
         </div>
 
-        <!-- Distance sensor readings-->
-        <h1>Distance Sensors Data</h1>
-
-        <!-- front bar -->
+        <!-- Distance sensors -->
+        <div id= "distance_text">Distance Sensors Data</div>
+        
         <div id="front-distance-value">Distance: No data</div>
-        <div class="bar-container">
-            <div class="bar" id="front-bar"></div>
+        <div class="cone-container front-cone-container"> <!-- Add new class here -->
+            <div class="cone-fill" id="front-bar"></div>
             <div class="label" id="front-label"></div>
         </div>
 
         <!-- Car image -->
         <img id="car-image" src="car.jpg" alt="Car" />
 
-        <!-- back bar -->
-        <div id="back-distance-value">Distance: No data</div>
-        <div class="bar-container">
-            <div class="bar" id="back-bar"></div>
+        <!-- Regular back cone for distance -->
+        <div class="cone-container">
+            <div class="cone-fill" id="back-bar"></div>
             <div class="label" id="back-label"></div>
         </div>
+        <div id="back-distance-value">Distance: No data</div>
 
         <script src="main.js" type="module"></script>
     </body>
