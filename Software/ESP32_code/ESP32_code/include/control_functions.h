@@ -18,9 +18,9 @@
 #define FR_MOTOR_PIN_2 19
 #define FR_MOTOR_CH_2 7
 
-#define BL_MOTOR_PIN_1 18    // Definitions of pins that will send PWM to their respective motor 
+//#define BL_MOTOR_PIN_1 18    // Definitions of pins that will send PWM to their respective motor 
 #define BL_MOTOR_CH_1 8
-#define BL_MOTOR_PIN_2 4
+//#define BL_MOTOR_PIN_2 4
 #define BL_MOTOR_CH_2 9
 
 //#define BR_MOTOR_PIN_1 16    // Definitions of pins that will send PWM to their respective motor 
@@ -28,8 +28,11 @@
 //#define BR_MOTOR_PIN_2 17
 #define BR_MOTOR_CH_2 11
 
-#define FRONT_DISTANCE_SENSOR_TRIG_PIN 16
+#define FRONT_DISTANCE_SENSOR_TRIG_PIN 18
 #define FRONT_DISTANCE_SENSOR_ECHO_PIN 17
+#define BACK_DISTANCE_SENSOR_TRIG_PIN 16
+#define BACK_DISTANCE_SENSOR_ECHO_PIN 4
+
 #define SOUND_SPEED 0.034
 
 
@@ -50,6 +53,6 @@ void set_motor(int motor_front_ch, int motor_back_ch, const char* dir_vertical, 
 
 void stop_motor(int motor_front_ch, int motor_back_ch, const char* dir_vertical, const char* dir_horizontal, int &duty);
 
-void get_distance(int trig_pin, int echo_pin, WiFiClient &client);
+void get_distance(WiFiClient client);
 
 #endif

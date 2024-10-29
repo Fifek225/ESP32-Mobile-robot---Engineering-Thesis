@@ -188,31 +188,33 @@ setInterval(setCameraImage, 50);  // Update the image every 50 miliseconds
 // ======================= DISTANCE SENSOR DATA HANDLING ===============================
 
 function updateDistanceDisplay() {
-    fetch('/front-distance')
+    fetch('/distance')
         .then(response => response.json())
         .then(data => {
             const frontBar = document.getElementById('front-bar');
-            //const backBar = document.getElementById('back-bar');
+            const backBar = document.getElementById('back-bar');
             const frontText = document.getElementById('front-distance-value');
-            //const backText = document.getElementById('back-distance-value');
+            const backText = document.getElementById('back-distance-value');
+            const maxDistance = 50;
             
             // Update the labels
-            if (data.connected) {
-                const distance = data.front_distance !== null ? data.front_distance : 0;
-                frontText.textContent = `Distance: ${distance} cm`;
-                //backText.textContent = `Distance: ${distance} cm`;
+            if (data.front_connected) {
+                const front_distance = data.front_distance !== null ? data.front_distance : 0;
+                //const back_distance = data.front_distance !== null ? data.back_distance : 0;
+                frontText.textContent = `Distance: ${front_distance} cm`;
+                //backText.textContent = `Distance: ${back_distance} cm`;
 
                 // Calculate the height of the cones based on the distance
                 // Assuming max distance is 50 cm, so height will range from 0 to 100%
-                const maxDistance = 50;
-                const heightPercentage = Math.max(0, Math.min(1, (maxDistance - distance) / maxDistance)) * 100;
+                const front_heightPercentage = Math.max(0, Math.min(1, (maxDistance - front_distance) / maxDistance)) * 100;
+                //const back_heightPercentage = Math.max(0, Math.min(1, (maxDistance - back_distance) / maxDistance)) * 100;
 
                 // Set the color and height for the front cone
-                frontBar.style.height = `${heightPercentage}%`;
-                if (heightPercentage < 60) {
+                frontBar.style.height = `${front_heightPercentage}%`;
+                if (front_heightPercentage < 60) {
                     frontBar.classList.add('green');
                     frontBar.classList.remove('orange', 'red');
-                } else if (heightPercentage < 85) {
+                } else if (front_heightPercentage < 85) {
                     frontBar.classList.add('orange');
                     frontBar.classList.remove('green', 'red');
                 } else {
@@ -220,19 +222,7 @@ function updateDistanceDisplay() {
                     frontBar.classList.remove('green', 'orange');
                 }
 
-                // // Set the color and height for the back cone (similar logic)
-                // backBar.style.height = `${heightPercentage}%`;
-                // if (heightPercentage < 60) {
-                //     backBar.classList.add('green');
-                //     backBar.classList.remove('orange', 'red');
-                // } else if (heightPercentage < 85) {
-                //     backBar.classList.add('orange');
-                //     backBar.classList.remove('green', 'red');
-                // } else {
-                //     backBar.classList.add('red');
-                //     backBar.classList.remove('green', 'orange');
-                // }
-            } else {
+            } else if(!data.front_connected) {
                 // Sensor is disconnected, show placeholder
                 frontText.textContent = `Distance: No data`;
                 //backText.textContent = `Distance: No data`;
@@ -241,15 +231,37 @@ function updateDistanceDisplay() {
                 frontBar.classList.remove('green', 'orange', 'red');
                 //backBar.classList.remove('green', 'orange', 'red');
             }
+
+            if(data.back_connected){
+                const back_distance = data.back_distance !== null ? data.back_distance : 0;
+                backText.textContent = `Distance: ${back_distance} cm`;
+                const back_heightPercentage = Math.max(0, Math.min(1, (maxDistance - back_distance) / maxDistance)) * 100;
+                backBar.style.height = `${back_heightPercentage}%`;
+                if (back_heightPercentage < 60) {
+                    backBar.classList.add('green');
+                    backBar.classList.remove('orange', 'red');
+                } else if (back_heightPercentage < 85) {
+                    backBar.classList.add('orange');
+                    backBar.classList.remove('green', 'red');
+                } else {
+                    backBar.classList.add('red');
+                    backBar.classList.remove('green', 'orange');
+                }
+            } else if(!data.back_connected) {
+                // Sensor is disconnected, show placeholder
+                backText.textContent = `Distance: No data`;
+                backBar.style.height = '0%';
+                backBar.classList.remove('green', 'orange', 'red');
+            }
         })
         .catch(error => {
             console.error("Error fetching distance data:", error);
-            document.getElementById('front-label').textContent = 'Distance: -------- cm';
-            //document.getElementById('back-label').textContent = 'Distance: -------- cm';
+            document.getElementById('front-distance-value').textContent = 'Distance: Error';
+            document.getElementById('back-distance-value').textContent = 'Distance: Error';
             document.getElementById('front-bar').style.height = '0%';
-            //document.getElementById('back-bar').style.height = '0%';
+            document.getElementById('back-bar').style.height = '0%';
         });
 }
 
-// Update the distance display every 25 milliseconds
-setInterval(updateDistanceDisplay, 32);
+// Update the distance display every 21 milliseconds
+setInterval(updateDistanceDisplay, 21);

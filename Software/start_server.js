@@ -223,13 +223,17 @@ tcp_cam.listen(TCP_PORT_CAM, "0.0.0.0", () => {
 
 // ============================ DISTANCE SENSOR DATA CONVERSION ====================================
 
-let distance_val = null;  // Variable to store the latest distance data
-let distanceSensorConnected = false;  // Flag to track the connection status
+let front_distance_val = null;  // Variable to store the latest distance data
+let back_distance_val = null;  // Variable to store the latest distance data
+let front_distanceSensorConnected = false;  // Flag to track the connection status
+let back_distanceSensorConnected = false;  // Flag to track the connection status
 
 
 http.get('/distance', (_,res) => {
-    res.json({front_distance: distance_val,
-        connected: distanceSensorConnected
+    res.json({front_distance: front_distance_val,
+        back_distance:  back_distance_val,
+        front_connected: front_distanceSensorConnected,
+        back_connected: back_distanceSensorConnected
     });
 })
 
@@ -239,33 +243,34 @@ http.get('/distance', (_,res) => {
 tcp.on("connection", (socket) => {
     esp_socket = socket;
     console.log("Communication with ESP32 main board established.");
-    distanceSensorConnected = true;
 
     socket.on('data', (data) => {
         const message = data.toString().trim();
         // If incoming data is from a Front distance sensor
         if(message.startsWith('FD: ')){ 
-            distance_val = parseFloat(message.slice(3));
-
+            front_distanceSensorConnected = true;
+            front_distance_val = parseFloat(message.slice(3));
+            console.log("FRONT: " + front_distance_val);
+        } else if(message.startsWith('BD: ')){
+            back_distanceSensorConnected = true;
+            back_distance_val = parseFloat(message.slice(3));
+            console.log("BACK: " + back_distance_val);
         }
     })
 
     socket.on('end', () => {
         console.log("Connection with ESP32 main board ended.");
-        distanceSensorConnected = false; 
+        front_distanceSensorConnected = false; 
+        back_distanceSensorConnected = false; 
+
     });
 
     socket.on('error', (err) => {
         console.error("Connection with ESP32 main board was broken", err);
-        distanceSensorConnected = false;  // Mark as disconnected
+        front_distanceSensorConnected = false;  // Mark as disconnected
+        back_distanceSensorConnected = false;  // Mark as disconnected
     });
 
-    // setInterval(() => {
-    //     if (distanceSensorConnected && Date.now() - lastDistanceTimestamp > TCP_TIMEOUT) {
-    //         console.log("Distance sensor is not sending data. Marking as disconnected.");
-    //         distanceSensorConnected = false;  // Set as disconnected if no data recently
-    //     }
-    // }, TCP_TIMEOUT);
 });
 
 

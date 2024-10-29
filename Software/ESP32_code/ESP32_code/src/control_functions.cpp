@@ -15,9 +15,13 @@ const int motor_mid_duty = 190;
 char* robot_dir_horizontal = "none";
 char* robot_dir_vertical = "none";
 
-long duration, distance;
-char distance_buff[40];
-int distance_len = 0;
+long front_duration, front_distance;
+char front_distance_buff[40];
+int front_distance_len = 0;
+
+long back_duration, back_distance;
+char back_distance_buff[40];
+int back_distance_len = 0;
 
 
 // Sets the state of fron LEDs
@@ -129,21 +133,34 @@ void stop_motor(int motor_front_ch, int motor_back_ch, const char* dir_vertical,
 }
 
 
-void get_distance(int trig_pin, int echo_pin, WiFiClient &client) {
+void get_distance(WiFiClient client) {
     // Trigger the ultrasonic sensor
-    digitalWrite(trig_pin, LOW);
+    //digitalWrite(FRONT_DISTANCE_SENSOR_TRIG_PIN, LOW);
+    digitalWrite(BACK_DISTANCE_SENSOR_TRIG_PIN, LOW);
     delayMicroseconds(5);
-    digitalWrite(trig_pin, HIGH);
+    //digitalWrite(FRONT_DISTANCE_SENSOR_TRIG_PIN, HIGH);
+    digitalWrite(BACK_DISTANCE_SENSOR_TRIG_PIN, HIGH);
     delayMicroseconds(10);
-    digitalWrite(trig_pin, LOW);
-    pinMode(echo_pin, INPUT);
+    //digitalWrite(FRONT_DISTANCE_SENSOR_TRIG_PIN, LOW);
+    digitalWrite(BACK_DISTANCE_SENSOR_TRIG_PIN, LOW);
+    //pinMode(FRONT_DISTANCE_SENSOR_ECHO_PIN, INPUT);
+    pinMode(BACK_DISTANCE_SENSOR_ECHO_PIN, INPUT);
 
-    duration = pulseIn(echo_pin, HIGH);
-    distance = (duration / 2) * SOUND_SPEED;
-    distance_len = snprintf(distance_buff, sizeof(distance_buff), "FD: %ld\n", distance);
+    //front_duration = pulseIn(FRONT_DISTANCE_SENSOR_ECHO_PIN, HIGH);
+    //front_distance = (front_duration / 2) * SOUND_SPEED;
+    back_duration = pulseIn(BACK_DISTANCE_SENSOR_ECHO_PIN, HIGH);
+    back_distance = (back_duration / 2) * SOUND_SPEED;
 
-    if (client.connected() && distance_len > 0) {
-        client.write((const uint8_t*)distance_buff, distance_len);
+    // front_distance_len = snprintf(front_distance_buff, sizeof(front_distance_buff), "FD: %ld\n", front_distance);
+    // if (client.connected() && front_distance_len > 0) {
+    //     client.write((const uint8_t*)front_distance_buff, front_distance_len);
+    // }
+
+    back_distance_len = snprintf(back_distance_buff, sizeof(back_distance_buff), "BD: %ld\n", back_distance);
+    if (client.connected() && back_distance_len > 0) {
+       client.write((const uint8_t*)back_distance_buff, back_distance_len);
+       Serial.print("Back sensor reading: "); Serial.println(back_distance_len);
     }
-    delay(30);
+    
+    delay(5);
 }
