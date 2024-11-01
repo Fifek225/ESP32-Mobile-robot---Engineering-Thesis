@@ -160,30 +160,50 @@ document.addEventListener('keyup', function(event) {
 });
 
 // ======================= CAMERA IMAGE HANDLING ===============================
-var camera_img = document.getElementById('camera_img');
+document.getElementById("camera_img").onload = function() {
+    const cameraContainer = document.querySelector(".camera-container");
+    cameraContainer.style.width = "400px";
+    cameraContainer.style.height = "300px";
+};
 var canvas = document.getElementById("canvas");
 var context = canvas.getContext("2d");
 
+
+let lastCameraConnected = false;
+let lastImageUrl = 'default_cam.jpg';
 
 function setCameraImage() {
     fetch('/is_camera_connected')
         .then(response => response.json())
         .then(data => {
-            const timestamp = new Date().getTime();  // Timestamp to prevent caching
+            const timestamp = new Date().getTime();  // Prevent caching
             if (data.connected) {
-                // Camera is connected, load the latest image
-                camera_img.src = `camera_image.jpg?${timestamp}`;
+                // Only update if the URL has changed to avoid unnecessary flicker
+                const newImageUrl = `camera_image.jpg?${timestamp}`;
+                if (newImageUrl !== lastImageUrl) {
+                    document.getElementById('camera_img').src = newImageUrl;
+                    lastImageUrl = newImageUrl;
+                }
+                lastCameraConnected = true;
             } else {
-                // Camera is disconnected, show black image
-                camera_img.src = 'default_cam.jpg';
+                // Retain the last image if the camera disconnects temporarily
+                if (!lastCameraConnected) {
+                    console.log("Camera disconnected. Retaining last image temporarily.");
+                } else {
+                    document.getElementById('camera_img').src = 'default_cam.jpg';
+                }
+                lastCameraConnected = false;
             }
         })
         .catch(error => {
             console.error("Error checking camera connection:", error);
-            camera_img.src = 'default_cam.jpg';  // In case of error, fall back to black image
+            // Only show the default image if there was a previous disconnection
+            if (!lastCameraConnected) {
+                document.getElementById('camera_img').src = 'default_cam.jpg';
+            }
         });
 }
-setInterval(setCameraImage, 50);  // Update the image every 50 miliseconds
+setInterval(setCameraImage, 55);  // Update the image every 50 miliseconds
 
 // ======================= DISTANCE SENSOR DATA HANDLING ===============================
 

@@ -168,8 +168,9 @@ http.post("/stop_down",(_,res) => {
 let video_buffer = Buffer.alloc(0);  // Initialize an empty buffer
 const image_path = 'static/camera_image.jpg';  // Path to save the image
 let cameraConnected = false;
+let receivingImage = false;  // Track if an image transmission is ongoing
 const CAMERA_TIMEOUT = 2000;
-
+let lastDataTimestamp = Date.now();
 
 tcp_cam.on("connection", (socket) => {
     esp_cam_socket = socket;
@@ -177,24 +178,41 @@ tcp_cam.on("connection", (socket) => {
     console.log("Communication with ESP32 Camera module established.");
 
     socket.on('data', (data) => {
-        console.log("Received data chunk of size:", data.length);
-        // Append new data to the buffer
-        video_buffer = Buffer.concat([video_buffer, data]);
+        const dataStr = data.toString();
+
+        // Detect cam_start and cam_end messages
+        if (dataStr.includes("cam_start")) {
+            console.log("Starting image transmission from ESP32.");
+            video_buffer = Buffer.alloc(0);  // Reset buffer for new image
+            receivingImage = true;
+            return;
+        }
+        
+        if (dataStr.includes("cam_end")) {
+            console.log("End of image transmission. Writing image to file.");
+            // Save the complete buffer as an image file
+            fs.writeFile(image_path, video_buffer, 'binary', (err) => {
+                if (err) {
+                    console.error("Error saving video buffer as image:", err);
+                } else {
+                    console.log("Image saved successfully as camera_image.jpg");
+                }
+                // Reset the buffer after the image is saved
+                video_buffer = Buffer.alloc(0);
+                receivingImage = false;
+            });
+            return;
+        }
+
+        // If we are in the middle of receiving an image, concatenate data
+        if (receivingImage) {
+            video_buffer = Buffer.concat([video_buffer, data]);
+            lastDataTimestamp = Date.now();  // Update last data timestamp for timeout tracking
+        }
     });
 
     socket.on('end', () => {
-        console.log("Camera TCP port connection closed. Writing image to file.");
-
-        // Write the complete buffer to a file when the connection is closed
-        fs.writeFile(image_path, video_buffer, 'binary', (err) => {
-            if (err) {
-                console.error("Error saving video buffer as image:", err);
-            } else {
-                console.log("Image saved successfully as camera_image.jpg");
-            }
-            // Reset the buffer after the image is saved
-            video_buffer = Buffer.alloc(0);
-        });
+        console.log("Camera TCP port connection closed.");
         cameraConnected = false;
     });
 
@@ -203,10 +221,13 @@ tcp_cam.on("connection", (socket) => {
     });
 });
 
+// Check for data timeout
 setInterval(() => {
     if (cameraConnected && Date.now() - lastDataTimestamp > CAMERA_TIMEOUT) {
         console.log("Camera is not sending data. Marking as disconnected.");
         cameraConnected = false;  // Set as disconnected if no data recently
+        receivingImage = false;
+        video_buffer = Buffer.alloc(0);  // Clear buffer if transmission interrupted
     }
 }, CAMERA_TIMEOUT);
 

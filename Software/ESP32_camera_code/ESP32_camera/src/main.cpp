@@ -78,13 +78,8 @@ void setup() {
 }
 
 void loop() {
-  cam_client.connect(server,server_port);
-  if (!cam_client.connected()) {
-    if (!cam_client.connect(server, server_port)) {
-      Serial.println("Reconnecting to server failed.");
-      return;
-    }
-  }
+
+  cam_client.print("cam_start");
 
   // Capture an image
   camera_fb_t *fb = esp_camera_fb_get(); // Capture the frame
@@ -104,8 +99,8 @@ void loop() {
     size_t chunk_size = (n + 1024 < fb_len) ? 1024 : fb_len - n;  // Adjust last chunk size
     cam_client.write(fb_buf + n, chunk_size);  // Send each chunk
   }
-
   esp_camera_fb_return(fb);  // Return the frame buffer after sending
-  cam_client.stop();
-  delay(50);  // Adjust this to control the capture interval
+  delay(30);
+  cam_client.print("cam_end");
+  delay(20);  // Adjust this to control the capture interval
 }
