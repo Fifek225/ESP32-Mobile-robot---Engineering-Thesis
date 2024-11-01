@@ -6,61 +6,65 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>Filip's Robot</title>
         <link href="web_style.css" rel="stylesheet">
-        <script async src=" https://docs.opencv.org/master/opencv.js" type="text/javascript"></script>
+        <script async src="https://docs.opencv.org/master/opencv.js" type="text/javascript"></script>
     </head>
     <body>
-        <!-- Picture of the robot -->
-        <img src="dog.png" alt="good">
-        <div id="status"></div>
+        <!-- Header section for title -->
+        <header>
+            <h1>Filip's Robot Control Center</h1>
+        </header>
 
-        <!-- LED Control -->
-        <div id="led_text">LED Control</div>
-        <div id="led_control">
-            <button type="button" id="front_LEDs_off">OFF</button>
-            <button type="button" id="front_LEDs_default" class="active">ON</button>
-            <button type="button" id="front_LEDs_max">ON (max)</button>
-        </div>
+        <div class="container">
+            <!-- Left section: LED and Movement Controls -->
+            <div class="left-panel">
+                <div id="led_text">LED Control</div>
+                <div id="led_control">
+                    <button type="button" id="front_LEDs_off">OFF</button>
+                    <button type="button" id="front_LEDs_default" class="active">ON</button>
+                    <button type="button" id="front_LEDs_max">ON (max)</button>
+                </div>
 
-        <!-- Adding space with line breaks -->
-        <br><br><br>
-
-        <!-- Movement Control -->
-        <div id="movement_text">Movement</div>
-        <div id="movement_control">
-            <div class="row">
-                <button class="up" id="move_up"></button>
+                <div id="movement_text">Movement</div>
+                <div id="movement_control">
+                    <div class="row">
+                        <button class="up" id="move_up"></button>
+                    </div>
+                    <div class="row">
+                        <button class="left" id="move_left"></button>
+                        <button class="down" id="move_down"></button>
+                        <button class="right" id="move_right"></button>
+                    </div>
+                </div>
             </div>
-            <div class="row">
-                <button class="left" id="move_left"></button>
-                <button class="down" id="move_down"></button>
-                <button class="right" id="move_right"></button>
+
+            <!-- Center section: Car and Distance Sensors -->
+            <div class="center-panel">
+                <div id="distance_text">Distance Sensors Data</div>
+                
+                <!-- Front Distance Sensor -->
+                <div id="front-distance-value">Distance: No data</div>
+                <div class="cone-container front-cone-container">
+                    <div class="cone-fill" id="front-bar"></div>
+                    <div class="label" id="front-label"></div>
+                </div>
+                
+                <!-- Car Image (smaller) -->
+                <img id="car-image" src="car.jpg" alt="Car" />
+
+                <!-- Back Distance Sensor -->
+                <div class="cone-container">
+                    <div class="cone-fill" id="back-bar"></div>
+                    <div class="label" id="back-label"></div>
+                </div>
+                <div id="back-distance-value">Distance: No data</div>
+            </div>
+
+            <!-- Right section: Camera Video (larger) -->
+            <div class="right-panel">
+                <img id="camera_img" src="default_cam.jpg" alt="No image"/>
+                <canvas id="canvas" style="display:none"></canvas>
             </div>
         </div>
-
-        <!-- Video stream -->
-         <div>
-            <img id = "camera_img" src = "default_cam.jpg" alt = "No image"/>
-            <canvas id = "canvas" style = "display:none"></canvas>
-        </div>
-
-        <!-- Distance sensors -->
-        <div id= "distance_text">Distance Sensors Data</div>
-        
-        <div id="front-distance-value">Distance: No data</div>
-        <div class="cone-container front-cone-container"> <!-- Add new class here -->
-            <div class="cone-fill" id="front-bar"></div>
-            <div class="label" id="front-label"></div>
-        </div>
-
-        <!-- Car image -->
-        <img id="car-image" src="car.jpg" alt="Car" />
-
-        <!-- Regular back cone for distance -->
-        <div class="cone-container">
-            <div class="cone-fill" id="back-bar"></div>
-            <div class="label" id="back-label"></div>
-        </div>
-        <div id="back-distance-value">Distance: No data</div>
 
         <script src="main.js" type="module"></script>
     </body>

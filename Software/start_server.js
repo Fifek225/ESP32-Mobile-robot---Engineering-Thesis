@@ -203,12 +203,12 @@ tcp_cam.on("connection", (socket) => {
     });
 });
 
-// setInterval(() => {
-//     if (cameraConnected && Date.now() - lastDataTimestamp > CAMERA_TIMEOUT) {
-//         console.log("Camera is not sending data. Marking as disconnected.");
-//         cameraConnected = false;  // Set as disconnected if no data recently
-//     }
-// }, CAMERA_TIMEOUT);
+setInterval(() => {
+    if (cameraConnected && Date.now() - lastDataTimestamp > CAMERA_TIMEOUT) {
+        console.log("Camera is not sending data. Marking as disconnected.");
+        cameraConnected = false;  // Set as disconnected if no data recently
+    }
+}, CAMERA_TIMEOUT);
 
 http.get('/is_camera_connected', (_, res) => {
     res.json({ connected: cameraConnected });
@@ -228,6 +228,10 @@ let back_distance_val = null;  // Variable to store the latest distance data
 let front_distanceSensorConnected = false;  // Flag to track the connection status
 let back_distanceSensorConnected = false;  // Flag to track the connection status
 
+let lastResponse = Date.now();  // Track the last time we received data from ESP32
+const CHECK_INTERVAL = 1;    // Check every 5 seconds
+const TIMEOUT_DURATION = 2; // Mark as disconnected if no response within 10 seconds
+
 
 http.get('/distance', (_,res) => {
     res.json({front_distance: front_distance_val,
@@ -245,6 +249,7 @@ tcp.on("connection", (socket) => {
     console.log("Communication with ESP32 main board established.");
 
     socket.on('data', (data) => {
+        lastResponse = Date.now();
         const message = data.toString().trim();
         // If incoming data is from a Front distance sensor
         if(message.startsWith('FD: ')){ 
@@ -272,6 +277,21 @@ tcp.on("connection", (socket) => {
     });
 
 });
+
+// Periodic check for ESP32 disconnection
+setInterval(() => {
+    if (esp_socket && Date.now() - lastResponse > TIMEOUT_DURATION) {
+        console.log("ESP32 appears to be disconnected (timeout).");
+        
+        // Reset connection status
+        front_distanceSensorConnected = false;
+        back_distanceSensorConnected = false;
+        
+        // Optionally, destroy the socket to force reconnection if needed
+        esp_socket.destroy();
+        esp_socket = null; // Clear the socket variable
+    }
+}, CHECK_INTERVAL);
 
 
 // Start the HTTP server

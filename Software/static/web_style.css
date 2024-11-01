@@ -3,32 +3,75 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-
-    /* Solid emerald green with 25% opacity */
-    background-color: rgba(57, 124, 155, 0.35); /* 25% opacity */
-    
+    background-color: rgba(57, 124, 155, 0.35);
     color: #333;
     text-align: center;
 }
 
-/* Image styling */
-img {
-    margin-top: 20px;
-    max-width: 100%;
+/* Header styling */
+header {
+    width: 100%;
+    padding: 20px 0;
+    background: repeating-linear-gradient(
+        45deg,
+        #8B4513,
+        #8B4513 10px,
+        #D2691E 10px,
+        #D2691E 20px
+    );
+    color: #fff;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Title text styling */
+header h1 {
+    margin: 0;
+}
+
+/* Container styling */
+.container {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 20px;
+    margin: 0 auto;
+    padding: 20px;
+    max-width: 1200px;
+    align-items: center;
+}
+
+/* Left, Center, and Right panel styling */
+.left-panel, .center-panel, .right-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Car image styling (smaller) */
+#car-image {
+    width: 100%;
+    max-width: 200px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* Camera image styling (larger) */
+#camera_img {
+    width: 100%;
+    max-width: 400px;
     height: auto;
     border-radius: 8px;
-}
-
-/* Status div styling */
-#status {
     margin-top: 20px;
-    padding: 10px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #0056b3;
 }
 
-/* LED control text styling */
+/* LED and Movement Controls styling */
+#led_control, #movement_control {
+    margin-bottom: 30px;
+}
+
 #led_text, #movement_text, #distance_text {
     font-size: 20px;
     font-weight: bold;
@@ -37,12 +80,10 @@ img {
     color: #333;
 }
 
-/* LED control section */
-#led_control {
-    margin-top: 10px;
-}
-
 #led_control button {
+    display: block;
+    width: 100px;
+    margin: 5px auto;
     background-color: #007bff;
     color: white;
     border: none;
@@ -53,32 +94,12 @@ img {
     transition: background-color 0.3s ease;
 }
 
-/* LED active state (green) */
 #led_control button.active {
-    background-color: #28a745; /* Green for active LED button */
+    background-color: #28a745;
 }
 
-/* LED hover */
 #led_control button:hover {
     background-color: #0056b3;
-}
-
-/* Responsive adjustments */
-@media (max-width: 600px) {
-    #led_control button {
-        width: 100%;
-        font-size: 18px;
-        padding: 15px;
-    }
-}
-
-/* Movement control section */
-#movement_control {
-    margin-top: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
 }
 
 #movement_control .row {
@@ -100,94 +121,41 @@ img {
     height: 60px;
 }
 
-#movement_control button:hover {
-    background-color: #0056b3;
-}
-
-/* Icon-like text for arrow buttons */
-#movement_control button.up::after {
-    content: "↑";
-}
-
-#movement_control button.down::after {
-    content: "↓";
-}
-
-#movement_control button.left::after {
-    content: "←";
-}
-
-#movement_control button.right::after {
-    content: "→";
-}
-
-/* Disabled button styles: make them almost transparent */
-#movement_control button:disabled {
-    background-color: #007bff;
-    opacity: 0.1;  /* Make disabled buttons almost invisible */
-    cursor: not-allowed;
-}
-
-/* Add an "active" state to simulate button press with subtle green */
 #movement_control button.active {
-    background-color: #28a745;  /* Subtle green for active button */
-    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    background-color: #28a745;
 }
 
-/* Responsive adjustments */
-@media (max-width: 600px) {
-    #movement_control button {
-        width: 80px;
-        height: 80px;
-        font-size: 24px;
-    }
-}
+#movement_control button.up::after { content: "↑"; }
+#movement_control button.down::after { content: "↓"; }
+#movement_control button.left::after { content: "←"; }
+#movement_control button.right::after { content: "→"; }
 
-/* Car Image Styling */
-#car-image {
-    width: 300px; /* Adjust the size of the car image */
-    margin: 20px 0;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-}
-
-/* Cone container styling */
+/* Distance Sensor styling */
 .cone-container {
     position: relative;
-    width: 90px; /* Width of the cone */
-    height: 100px; /* Height of the cone */
-    background: conic-gradient(#ddd, #ddd); /* Default empty color */
-    clip-path: polygon(50% 0%, 100% 100%, 0% 100%); /* Creates cone shape */
+    width: 90px;
+    height: 100px;
+    background: conic-gradient(#ddd, #ddd);
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
     overflow: hidden;
-    margin: 10px auto; /* Center cones horizontally */
+    margin: 10px auto;
 }
 
-/* Rotate the front cone container */
 .front-cone-container {
-    transform: rotate(180deg); /* Flip the front cone upside down */
+    transform: rotate(180deg);
 }
 
-/* Cone fill element */
 .cone-fill {
     position: absolute;
-    top: 0; /* Anchored to the top so it fills downward */
+    top: 0;
     width: 100%;
-    height: 0%; /* Initial height, dynamically set */
-    background: green; /* Default color */
-    clip-path: polygon(50% 0%, 100% 100%, 0% 100%); /* Matches cone shape */
+    height: 0%;
+    background: green;
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
     transition: height 0.3s ease, background-color 0.3s ease;
 }
 
-/* Label positioning */
-.label {
-    margin-top: 5px;
-    font-size: 14px;
-    color: #333;
-    font-weight: bold;
-    text-align: center;
-}
-
-/* Additional Styling for the Distance Bars Based on Proximity */
+/* Color-changing classes for the cone based on proximity */
 .cone-fill.green {
     background-color: green;
 }
@@ -198,4 +166,34 @@ img {
 
 .cone-fill.red {
     background-color: red;
+}
+
+/* Label styling */
+.label {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #333;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 800px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+
+    .left-panel, .center-panel, .right-panel {
+        align-items: center;
+        text-align: center;
+    }
+
+    #led_control button, #movement_control button {
+        width: 100px;
+        padding: 10px;
+    }
+
+    #camera_img, #car-image {
+        width: 80%;
+    }
 }
