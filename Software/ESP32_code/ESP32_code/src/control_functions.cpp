@@ -144,7 +144,7 @@ void get_distance(WiFiClient client) {
     //digitalWrite(FRONT_DISTANCE_SENSOR_TRIG_PIN, LOW);
     digitalWrite(BACK_DISTANCE_SENSOR_TRIG_PIN, LOW);
     //pinMode(FRONT_DISTANCE_SENSOR_ECHO_PIN, INPUT);
-    pinMode(BACK_DISTANCE_SENSOR_ECHO_PIN, INPUT);
+    //pinMode(BACK_DISTANCE_SENSOR_ECHO_PIN, INPUT);
 
     //front_duration = pulseIn(FRONT_DISTANCE_SENSOR_ECHO_PIN, HIGH);
     //front_distance = (front_duration / 2) * SOUND_SPEED;
@@ -161,6 +161,8 @@ void get_distance(WiFiClient client) {
        client.write((const uint8_t*)back_distance_buff, back_distance_len);
        Serial.print("Back sensor reading: "); Serial.println(back_distance_len);
     }
+    Serial.print("Back sensor reading: "); Serial.println(back_distance_len);
+
     
-    delay(5);
+    delay(10);
 }

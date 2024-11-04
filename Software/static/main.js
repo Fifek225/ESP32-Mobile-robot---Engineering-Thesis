@@ -77,7 +77,7 @@ function pressButton(button, oppositeButton, direction, activeTracker) {
         oppositeButton.disabled = true;  // Disable the opposite button
         button.classList.add('active');  // Highlight the pressed button with green
         console.log(`Moving ${direction}`);
-        const request = new Request(`/move_${direction}, { method: "POST" }`);
+        const request = new Request(`/move_${direction}`, { method: "POST" });
         fetch(request).then(
             response => response.text()
         );
@@ -92,7 +92,7 @@ function releaseButton(button, oppositeButton, direction, activeTracker) {
         button.classList.remove('active');  // Remove the active class to restore default color
         oppositeButton.disabled = false;  // Re-enable the opposite button
         // Stop the movement by sending a request to the server
-        const request = new Request(`/stop_${direction}, { method: "POST" }`);
+        const request = new Request(`/stop_${direction}`, { method: "POST" });
         fetch(request).then(
             response => response.text()
         );
@@ -169,41 +169,26 @@ var canvas = document.getElementById("canvas");
 var context = canvas.getContext("2d");
 
 
-let lastCameraConnected = false;
-let lastImageUrl = 'default_cam.jpg';
-
 function setCameraImage() {
     fetch('/is_camera_connected')
         .then(response => response.json())
         .then(data => {
-            const timestamp = new Date().getTime();  // Prevent caching
+            const timestamp = new Date().getTime();  // Timestamp to prevent caching
             if (data.connected) {
-                // Only update if the URL has changed to avoid unnecessary flicker
-                const newImageUrl = `camera_image.jpg?${timestamp}`;
-                if (newImageUrl !== lastImageUrl) {
-                    document.getElementById('camera_img').src = newImageUrl;
-                    lastImageUrl = newImageUrl;
-                }
-                lastCameraConnected = true;
+                // Camera is connected, load the latest image
+                camera_img.src = `camera_image.jpg?${timestamp}`;
             } else {
-                // Retain the last image if the camera disconnects temporarily
-                if (!lastCameraConnected) {
-                    console.log("Camera disconnected. Retaining last image temporarily.");
-                } else {
-                    document.getElementById('camera_img').src = 'default_cam.jpg';
-                }
-                lastCameraConnected = false;
+                // Camera is disconnected, show black image
+                camera_img.src = 'default_cam.jpg';
             }
+            console.log(camera_img.src);
         })
         .catch(error => {
             console.error("Error checking camera connection:", error);
-            // Only show the default image if there was a previous disconnection
-            if (!lastCameraConnected) {
-                document.getElementById('camera_img').src = 'default_cam.jpg';
-            }
+            camera_img.src = 'default_cam.jpg';  // In case of error, fall back to black image
         });
 }
-setInterval(setCameraImage, 55);  // Update the image every 50 miliseconds
+setInterval(setCameraImage, 50);  // Update the image every 50 miliseconds
 
 // ======================= DISTANCE SENSOR DATA HANDLING ===============================
 

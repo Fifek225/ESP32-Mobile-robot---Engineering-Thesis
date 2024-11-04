@@ -168,9 +168,10 @@ http.post("/stop_down",(_,res) => {
 let video_buffer = Buffer.alloc(0);  // Initialize an empty buffer
 const image_path = 'static/camera_image.jpg';  // Path to save the image
 let cameraConnected = false;
-let receivingImage = false;  // Track if an image transmission is ongoing
-const CAMERA_TIMEOUT = 2000;
+const CAMERA_TIMEOUT = 2500;
+const CAMERA_INTERVAL = 2000;
 let lastDataTimestamp = Date.now();
+
 
 tcp_cam.on("connection", (socket) => {
     esp_cam_socket = socket;
@@ -178,58 +179,40 @@ tcp_cam.on("connection", (socket) => {
     console.log("Communication with ESP32 Camera module established.");
 
     socket.on('data', (data) => {
-        const dataStr = data.toString();
-
-        // Detect cam_start and cam_end messages
-        if (dataStr.includes("cam_start")) {
-            console.log("Starting image transmission from ESP32.");
-            video_buffer = Buffer.alloc(0);  // Reset buffer for new image
-            receivingImage = true;
-            return;
-        }
-        
-        if (dataStr.includes("cam_end")) {
-            console.log("End of image transmission. Writing image to file.");
-            // Save the complete buffer as an image file
-            fs.writeFile(image_path, video_buffer, 'binary', (err) => {
-                if (err) {
-                    console.error("Error saving video buffer as image:", err);
-                } else {
-                    console.log("Image saved successfully as camera_image.jpg");
-                }
-                // Reset the buffer after the image is saved
-                video_buffer = Buffer.alloc(0);
-                receivingImage = false;
-            });
-            return;
-        }
-
-        // If we are in the middle of receiving an image, concatenate data
-        if (receivingImage) {
-            video_buffer = Buffer.concat([video_buffer, data]);
-            lastDataTimestamp = Date.now();  // Update last data timestamp for timeout tracking
-        }
+        console.log("Received data chunk of size:", data.length);
+        // Append new data to the buffer
+        video_buffer = Buffer.concat([video_buffer, data]);
+        lastDataTimestamp = Date.now();
     });
 
     socket.on('end', () => {
-        console.log("Camera TCP port connection closed.");
-        cameraConnected = false;
+        console.log("Camera TCP port connection closed. Writing image to file.");
+
+        // Write the complete buffer to a file when the connection is closed
+        fs.writeFile(image_path, video_buffer, 'binary', (err) => {
+            if (err) {
+                console.error("Error saving video buffer as image:", err);
+            } else {
+                console.log("Image saved successfully as camera_image.jpg");
+            }
+            // Reset the buffer after the image is saved
+            video_buffer = Buffer.alloc(0);
+        });
+        //cameraConnected = false;
     });
 
     socket.on('error', (err) => {
         console.error("Error on TCP connection:", err);
+        cameraConnected = false;
     });
 });
 
-// Check for data timeout
 setInterval(() => {
     if (cameraConnected && Date.now() - lastDataTimestamp > CAMERA_TIMEOUT) {
         console.log("Camera is not sending data. Marking as disconnected.");
         cameraConnected = false;  // Set as disconnected if no data recently
-        receivingImage = false;
-        video_buffer = Buffer.alloc(0);  // Clear buffer if transmission interrupted
     }
-}, CAMERA_TIMEOUT);
+}, CAMERA_INTERVAL);
 
 http.get('/is_camera_connected', (_, res) => {
     res.json({ connected: cameraConnected });
@@ -250,8 +233,8 @@ let front_distanceSensorConnected = false;  // Flag to track the connection stat
 let back_distanceSensorConnected = false;  // Flag to track the connection status
 
 let lastResponse = Date.now();  // Track the last time we received data from ESP32
-const CHECK_INTERVAL = 1;    // Check every 5 seconds
-const TIMEOUT_DURATION = 2; // Mark as disconnected if no response within 10 seconds
+const CHECK_INTERVAL = 1000;    // Check every 5 seconds
+const TIMEOUT_DURATION = 5000; // Mark as disconnected if no response within 10 seconds
 
 
 http.get('/distance', (_,res) => {
@@ -299,20 +282,19 @@ tcp.on("connection", (socket) => {
 
 });
 
-// Periodic check for ESP32 disconnection
-setInterval(() => {
-    if (esp_socket && Date.now() - lastResponse > TIMEOUT_DURATION) {
-        console.log("ESP32 appears to be disconnected (timeout).");
+// // Periodic check for ESP32 disconnection
+// setInterval(() => {
+//     if (esp_socket && Date.now() - lastResponse > TIMEOUT_DURATION) {
+//         console.log("ESP32 appears to be disconnected (timeout).");
         
-        // Reset connection status
-        front_distanceSensorConnected = false;
-        back_distanceSensorConnected = false;
+//         front_distanceSensorConnected = false;
+//         back_distanceSensorConnected = false;
         
-        // Optionally, destroy the socket to force reconnection if needed
-        esp_socket.destroy();
-        esp_socket = null; // Clear the socket variable
-    }
-}, CHECK_INTERVAL);
+//         // Optionally, destroy the socket to force reconnection if needed
+//         esp_socket.destroy();
+//         esp_socket = null; // Clear the socket variable
+//     }
+// }, CHECK_INTERVAL);
 
 
 // Start the HTTP server

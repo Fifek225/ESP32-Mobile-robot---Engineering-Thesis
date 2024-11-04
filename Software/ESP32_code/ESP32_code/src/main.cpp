@@ -60,14 +60,14 @@ void setup() {
   ledcSetup(FL_MOTOR_CH_2,MOTOR_FREQUENCY,8);
   ledcSetup(FR_MOTOR_CH_1,MOTOR_FREQUENCY,8);
   ledcSetup(FR_MOTOR_CH_2,MOTOR_FREQUENCY,8);
-  ledcSetup(BL_MOTOR_CH_1,MOTOR_FREQUENCY,8);
-  ledcSetup(BL_MOTOR_CH_2,MOTOR_FREQUENCY,8);
+  //ledcSetup(BL_MOTOR_CH_1,MOTOR_FREQUENCY,8);
+  //ledcSetup(BL_MOTOR_CH_2,MOTOR_FREQUENCY,8);
   //ledcSetup(BR_MOTOR_CH_1,MOTOR_FREQUENCY,8);
   //ledcSetup(BR_MOTOR_CH_2,MOTOR_FREQUENCY,8);
 
   // Setup for distance sensors
-  pinMode(FRONT_DISTANCE_SENSOR_TRIG_PIN,OUTPUT);
-  pinMode(FRONT_DISTANCE_SENSOR_ECHO_PIN,INPUT);
+  //pinMode(FRONT_DISTANCE_SENSOR_TRIG_PIN,OUTPUT);
+  //pinMode(FRONT_DISTANCE_SENSOR_ECHO_PIN,INPUT);
   pinMode(BACK_DISTANCE_SENSOR_TRIG_PIN,OUTPUT);
   pinMode(BACK_DISTANCE_SENSOR_ECHO_PIN,INPUT);
 
@@ -88,9 +88,8 @@ void loop() {
     control_motors(byte);
 
     }
-    // CASE - DISTANCE SENSOR OUTPUT
+    // CASE - DISTANCE SENSOR OUTPUT  
     get_distance(client);
-    
   }
-  
+ 
 }

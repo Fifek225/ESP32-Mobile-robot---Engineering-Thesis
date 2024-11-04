@@ -28,10 +28,10 @@
 //#define BR_MOTOR_PIN_2 17
 #define BR_MOTOR_CH_2 11
 
-#define FRONT_DISTANCE_SENSOR_TRIG_PIN  18
-#define FRONT_DISTANCE_SENSOR_ECHO_PIN  17
+//#define FRONT_DISTANCE_SENSOR_TRIG_PIN  18
+//#define FRONT_DISTANCE_SENSOR_ECHO_PIN  17
 #define BACK_DISTANCE_SENSOR_TRIG_PIN   16
-#define BACK_DISTANCE_SENSOR_ECHO_PIN   4
+#define BACK_DISTANCE_SENSOR_ECHO_PIN   17
 
 #define SOUND_SPEED 0.034
 
@@ -43,9 +43,6 @@ extern int front_led_duty;
 void set_front_LEDs(char byte); // Sets the state of front LEDs
 
 void set_back_LEDs(char byte); // Sets the state of back LEDs
- 
-//void control_motors(char byte); // Checks for arrow key inputs that control motors and uses set_motor function accordingly to user's inputs
-//void set_motor(int motor_front_ch, int motor_back_ch, const char* direction, int &duty); // Sets given motor's direction and speed (duty)
 
 void control_motors(char byte);
 
