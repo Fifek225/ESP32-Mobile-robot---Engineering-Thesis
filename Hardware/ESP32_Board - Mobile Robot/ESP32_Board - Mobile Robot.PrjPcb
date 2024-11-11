@@ -171,13 +171,13 @@ GenerateClassCluster=0
 DocumentUniqueId=TKFAXELM
 
 [Document8]
-DocumentPath=ESP32-connector.SchDoc
+DocumentPath=ESP32-connectors&Battery.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
 AnnotationIndexControlEnabled=0
 AnnotateSuffix=
 AnnotateScope=All
-AnnotateOrder=1
+AnnotateOrder=-1
 DoLibraryUpdate=1
 DoDatabaseUpdate=1
 ClassGenCCAutoEnabled=1
