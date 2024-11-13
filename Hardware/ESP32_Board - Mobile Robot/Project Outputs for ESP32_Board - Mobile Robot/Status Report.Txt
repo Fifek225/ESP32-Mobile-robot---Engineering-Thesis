@@ -1,0 +1,13 @@
+Output: NC Drill Files
+Type  : NC Drill
+From  : Project [ESP32_Board - Mobile Robot.PrjPcb]
+   Generated File[ESP32_Board.TXT]
+   Generated File[ESP32_Board.DRL]
+   Generated File[ESP32_Board.LDP]
+   Generated File[ESP32_Board.DRR]
+
+
+Files Generated   : 4
+Documents Printed : 0
+
+Finished Output Generation At 9:37:30 PM On 11/13/2024
